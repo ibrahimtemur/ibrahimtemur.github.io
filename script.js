@@ -113,6 +113,8 @@ Object.assign(I18N.tr, {
   "featured.title": "Öne Çıkan Ürün: Mac Remote (Desktop Remote)",
   "featured.subtitle": "iOS (iPhone & iPad) ve Android cihazları macOS için ultra düşük gecikmeli kablosuz trackpad, klavye, medya kumandası ve 2200p canlı ekran yansıtıcısına dönüştüren çapraz platform ekosistem.",
   "featured.badge.live": "Google Play & App Store'da Yayında",
+  "featured.badge.appstore_dev": "App Store Geliştirici Profili ↗",
+  "featured.badge.play_dev": "Google Play Geliştirici Profili ↗",
   "featured.badge.notarized": "Apple Developer ID İmzalı & Notarized DMG",
   "featured.card.tagline": "iOS, Android ve macOS Arasında Milisaniye Seviyesinde Kablosuz Kontrol & Ekran Aktarımı",
   "featured.card.desc": "Mac Remote; yerel Wi-Fi (Zeroconf/Bonjour mDNS) veya internet (Oracle Cloud VPS üzerinde izole ters TCP tüneli + QR kod eşleştirme) üzerinden çalışan, donanım düzeyinde macOS CoreGraphics (Quartz) girdi enjeksiyonuna ve GPU hızlandırmalı canlı ekran yansıtmasına sahip uçtan uca bir üründür.",
@@ -174,6 +176,8 @@ Object.assign(I18N.en, {
   "featured.title": "Flagship Product: Mac Remote (Desktop Remote)",
   "featured.subtitle": "An ultra-low-latency cross-platform ecosystem transforming iOS (iPhone & iPad) and Android devices into a wireless trackpad, keyboard, media controller, and 2200p live screen mirror for macOS.",
   "featured.badge.live": "Published on Google Play & App Store",
+  "featured.badge.appstore_dev": "App Store Developer Profile ↗",
+  "featured.badge.play_dev": "Google Play Developer Profile ↗",
   "featured.badge.notarized": "Apple Developer ID Signed & Notarized DMG",
   "featured.card.tagline": "Sub-Millisecond Wireless Control & Real-Time Screen Streaming Across iOS, Android & macOS",
   "featured.card.desc": "Mac Remote operates seamlessly over local Wi-Fi (Zeroconf/Bonjour mDNS) or the internet (isolated reverse TCP tunnel on Oracle Cloud VPS + QR code pairing), combining hardware-level macOS CoreGraphics (Quartz) input injection with GPU-accelerated live screen streaming.",
@@ -293,6 +297,8 @@ const PROJECTS_DATA = [
     links: [
       { labelTr: "Google Play", labelEn: "Google Play", url: "https://play.google.com/store/apps/details?id=com.ibrahimtemur.macremote", type: "live" },
       { labelTr: "App Store", labelEn: "App Store", url: "https://apps.apple.com/tr/app/desktop-remote/id6812348430?l=tr", type: "live" },
+      { labelTr: "App Store Dev", labelEn: "App Store Dev", url: "https://apps.apple.com/us/developer/ibrahim-temur/id6812348432", type: "live" },
+      { labelTr: "Play Store Dev", labelEn: "Play Store Dev", url: "https://play.google.com/store/apps/developer?id=%C4%B0brahim+Temur", type: "live" },
       { labelTr: "GitHub", labelEn: "GitHub", url: "https://github.com/ibrahimtemur/mac-remote-app", type: "repo" }
     ]
   },

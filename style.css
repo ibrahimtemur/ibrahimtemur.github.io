@@ -761,6 +761,16 @@ button {
 .code-line { display: block; }
 .code-key { color: #fafafa; font-weight: 500; }
 .code-string { color: #a1a1aa; }
+.code-link {
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.22);
+  text-underline-offset: 3px;
+  transition: color 0.18s ease, text-decoration-color 0.18s ease;
+}
+.code-link:hover {
+  color: #ffffff;
+  text-decoration-color: var(--accent-emerald);
+}
 .code-keyword { color: #71717a; font-style: italic; }
 .code-comment { color: #52525b; font-style: italic; }
 
@@ -1033,6 +1043,19 @@ button {
   background: var(--bg-badge);
   color: var(--accent-blue);
   border: 1px solid var(--border-accent);
+}
+
+.featured-badge.store-dev {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+  transition: all 0.2s ease;
+}
+
+.featured-badge.store-dev:hover {
+  border-color: var(--accent-emerald);
+  color: var(--accent-emerald);
+  transform: translateY(-1px);
 }
 
 .featured-title {
@@ -1452,7 +1475,7 @@ button {
 
 .social-cards-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
   gap: 1rem;
 }
 
