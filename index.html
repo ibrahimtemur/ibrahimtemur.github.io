@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>İbrahim Temur — Yazılım Geliştirici & Bilgisayar Mühendisliği Öğrencisi</title>
+  <meta name="description" content="İbrahim Temur — Bilgisayar Mühendisliği Öğrencisi (ADÜ), GDG on Campus ADÜ Yazılım Core Team Üyesi ve Çapraz Platform (Flutter, SwiftUI, Jetpack Compose), Full-Stack Web (React, ASP.NET Core MVC) ve IoT/Gömülü Sistem Geliştiricisi." />
+  <meta name="author" content="İbrahim Temur" />
+  <meta name="keywords" content="İbrahim Temur, Software Developer, Computer Engineering, Flutter, Mac Remote, Desktop Remote, SwiftUI, Jetpack Compose, React, ASP.NET Core MVC, ESP32, IoT, GDG on Campus ADÜ" />
+
+  <!-- Open Graph / Social Meta -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://ibrahimtemur.github.io/" />
+  <meta property="og:title" content="İbrahim Temur — Software Developer & Computer Engineering" />
+  <meta property="og:description" content="Cross-Platform Mobile & Desktop (Flutter, SwiftUI, Jetpack Compose, PyQt6), Full-Stack Web (React, ASP.NET Core MVC, Node.js) & IoT/Embedded Systems." />
+  <meta property="og:image" content="https://avatars.githubusercontent.com/u/83337424?v=4" />
+
+  <!-- Dynamic SVG Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%233b82f6'/%3E%3Cstop offset='100%25' stop-color='%2310b981'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold' font-size='26'%3EIT%3C/text%3E%3C/svg%3E" />
+
+  <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Ambient Background Grid & Glow -->
+  <div class="ambient-bg" aria-hidden="true"></div>
+
+  <!-- ====================================================================
+       STICKY GLASSMORPHIC NAVBAR
+       ==================================================================== -->
+  <header class="navbar" id="navbar">
+    <div class="container nav-inner">
+      <a href="#top" class="brand" aria-label="İbrahim Temur Home">
+        <span class="brand-mark">&lt;IT/&gt;</span>
+        <span class="brand-text">
+          <span>İbrahim Temur</span>
+          <span class="brand-role" data-i18n="nav.role">Software &amp; Systems</span>
+        </span>
+      </a>
+
+      <nav aria-label="Primary Navigation">
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#about" class="nav-link" data-i18n="nav.about">Hakkımda</a></li>
+          <li><a href="#skills" class="nav-link" data-i18n="nav.skills">Yetenekler</a></li>
+          <li><a href="#featured" class="nav-link" data-i18n="nav.featured">Vitrin</a></li>
+          <li><a href="#projects" class="nav-link" data-i18n="nav.projects">Projeler</a></li>
+          <li><a href="#contact" class="nav-link" data-i18n="nav.contact">İletişim</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-controls">
+        <!-- Bilingual Switcher (TR | EN) -->
+        <div class="lang-switch" role="group" aria-label="Language Switcher">
+          <button type="button" class="lang-btn active" id="langTrBtn" data-lang="tr" aria-label="Türkçe">TR</button>
+          <button type="button" class="lang-btn" id="langEnBtn" data-lang="en" aria-label="English">EN</button>
+        </div>
+
+        <!-- Dark / Light Mode Toggle -->
+        <button type="button" class="icon-control-btn" id="themeToggleBtn" aria-label="Toggle Dark/Light Theme" title="Tema Değiştir / Toggle Theme">
+          <i data-lucide="sun" id="themeIcon"></i>
+        </button>
+
+        <!-- Mobile Menu Toggle -->
+        <button type="button" class="icon-control-btn mobile-menu-btn" id="mobileMenuBtn" aria-label="Menüyü Aç/Kapat" aria-expanded="false">
+          <i data-lucide="menu" id="mobileMenuIcon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- ==================================================================
+         HERO SECTION
+         ================================================================== -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-content reveal visible">
+          <div class="hero-badges">
+            <span class="status-pill gdg">
+              <span class="pulse-dot"></span>
+              <span data-i18n="hero.badge.gdg">GDG on Campus ADÜ — Yazılım Core Team Üyesi</span>
+            </span>
+            <a href="#featured" class="status-pill store">
+              <i data-lucide="smartphone" style="width:15px;height:15px;"></i>
+              <span data-i18n="hero.badge.store">Google Play &amp; App Store'da Yayında Ürün Sahibi</span>
+            </a>
+          </div>
+
+          <h1 class="hero-title">
+            <span data-i18n="hero.greeting">Merhaba, ben</span><br />
+            <span class="gradient-text">İbrahim Temur</span>
+          </h1>
+
+          <p class="hero-role" data-i18n="hero.role">
+            Bilgisayar Mühendisliği Öğrencisi &amp; Yazılım Geliştirici
+          </p>
+
+          <div class="typewriter-wrapper" aria-live="polite">
+            <span class="typewriter-prefix">~/ibrahimtemur $</span>
+            <span id="typewriterText">Flutter &amp; Cross-Platform (iOS, Android, macOS)</span>
+            <span class="typewriter-cursor" aria-hidden="true"></span>
+          </div>
+
+          <p class="hero-description" data-i18n="hero.desc">
+            Aydın Adnan Menderes Üniversitesi (ADÜ) <strong>Bilgisayar Mühendisliği</strong> öğrencisi ve <strong>GDG on Campus ADÜ Yazılım Core Team</strong> üyesiyim. Donanım seviyesinde sistem programlama ve gerçek zamanlı ekran aktarımından (<strong>macOS, iOS, Android, Flutter</strong>), ölçeklenebilir Full-Stack web mimarilerine (<strong>React 19, ASP.NET Core MVC, PostgreSQL</strong>) ve <strong>ESP32/ESP8266 IoT</strong> çözümlerine kadar uçtan uca ürünler geliştiriyorum.
+          </p>
+
+          <div class="hero-cta-group">
+            <a href="#projects" class="btn btn-primary">
+              <i data-lucide="layers" style="width:18px;height:18px;"></i>
+              <span data-i18n="hero.cta.projects">Projelerimi İncele</span>
+            </a>
+            <a href="#contact" class="btn btn-secondary">
+              <i data-lucide="send" style="width:18px;height:18px;"></i>
+              <span data-i18n="hero.cta.contact">İletişime Geç</span>
+            </a>
+          </div>
+
+          <!-- Quick Social Icon Links -->
+          <div class="hero-socials" aria-label="Social Media Links">
+            <a href="https://github.com/ibrahimtemur" target="_blank" rel="noopener noreferrer" class="social-icon-link" title="GitHub (@ibrahimtemur)" aria-label="GitHub">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/in/ibrahim-temur/" target="_blank" rel="noopener noreferrer" class="social-icon-link" title="LinkedIn (İbrahim Temur)" aria-label="LinkedIn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+            </a>
+            <a href="mailto:ibrahimtemur847@gmail.com" class="social-icon-link" title="Email (ibrahimtemur847@gmail.com)" aria-label="Email">
+              <i data-lucide="mail" style="width:20px;height:20px;"></i>
+            </a>
+            <a href="https://x.com/ibrahim_temur_" target="_blank" rel="noopener noreferrer" class="social-icon-link" title="X / Twitter (@ibrahim_temur_)" aria-label="X (Twitter)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+            <a href="https://www.instagram.com/ibrahimtemurr_/" target="_blank" rel="noopener noreferrer" class="social-icon-link" title="Instagram (@ibrahimtemurr_)" aria-label="Instagram">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Hero Right: Developer Architecture Terminal Card -->
+        <div class="hero-terminal-card reveal visible">
+          <div class="terminal-header">
+            <div class="terminal-dots">
+              <span class="terminal-dot red"></span>
+              <span class="terminal-dot yellow"></span>
+              <span class="terminal-dot green"></span>
+            </div>
+            <span class="terminal-title">ibrahim_temur.profile.ts</span>
+            <span class="font-mono" style="font-size:0.72rem;color:var(--accent-emerald);">● LIVE</span>
+          </div>
+          <div class="terminal-body">
+            <span class="code-line"><span class="code-keyword">const</span> <span class="code-key">developer</span> = {</span>
+            <span class="code-line">&nbsp;&nbsp;<span class="code-key">name</span>: <span class="code-string">"İbrahim Temur"</span>,</span>
+            <span class="code-line">&nbsp;&nbsp;<span class="code-key">education</span>: <span class="code-string">"ADÜ Computer Engineering"</span>,</span>
+            <span class="code-line">&nbsp;&nbsp;<span class="code-key">community</span>: <span class="code-string">"GDG on Campus ADÜ · Software Core Team"</span>,</span>
+            <span class="code-line">&nbsp;&nbsp;<span class="code-key">publishedApps</span>: [</span>
+            <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">"Mac Remote (Google Play Store)"</span>,</span>
+            <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">"Desktop Remote (Apple App Store)"</span>,</span>
+            <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">"GDG Info Session (Vercel + Neon)"</span></span>
+            <span class="code-line">&nbsp;&nbsp;],</span>
+            <span class="code-line">&nbsp;&nbsp;<span class="code-key">domains</span>: [<span class="code-string">"Cross-Platform"</span>, <span class="code-string">"Web"</span>, <span class="code-string">"Systems"</span>, <span class="code-string">"IoT"</span>],</span>
+            <span class="code-line">&nbsp;&nbsp;<span class="code-key">hardware</span>: [<span class="code-string">"ESP32"</span>, <span class="code-string">"ESP8266"</span>, <span class="code-string">"Smart Coffee IoT"</span>]</span>
+            <span class="code-line">};</span>
+          </div>
+          <div class="hero-metrics-grid">
+            <div class="hero-metric-item">
+              <span class="metric-value">3+</span>
+              <span class="metric-label" data-i18n="hero.metric.stores">Mağazada Yayında (iOS, Android, macOS)</span>
+            </div>
+            <div class="hero-metric-item">
+              <span class="metric-value">4</span>
+              <span class="metric-label" data-i18n="hero.metric.domains">Mühendislik Disiplini (Mobil, Web, Sistem, IoT)</span>
+            </div>
+            <div class="hero-metric-item">
+              <span class="metric-value">GDG</span>
+              <span class="metric-label" data-i18n="hero.metric.community">GDG on Campus ADÜ Core Team</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================================
+         ABOUT & COMMUNITY SECTION (BENTO GRID)
+         ================================================================== -->
+    <section class="section" id="about">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-eyebrow">
+            <i data-lucide="cpu" style="width:15px;height:15px;"></i>
+            <span data-i18n="about.eyebrow">Mühendislik &amp; Topluluk</span>
+          </span>
+          <h2 class="section-title" data-i18n="about.title">Hakkımda ve Odak Alanlarım</h2>
+          <p class="section-subtitle" data-i18n="about.subtitle">
+            Düşük gecikmeli yerel sistemlerden bulut tabanlı Full-Stack web uygulamalarına ve gömülü mikrodenetleyici projelerine uzanan çok disiplinli yazılım mühendisliği yaklaşımı.
+          </p>
+        </div>
+
+        <div class="bento-grid">
+          <!-- Bento Card 1 -->
+          <article class="bento-card bento-span-7 reveal">
+            <div>
+              <div class="bento-icon-box">
+                <i data-lucide="graduation-cap" style="width:22px;height:22px;"></i>
+              </div>
+              <h3 class="bento-card-title" data-i18n="about.card1.title">
+                Bilgisayar Mühendisliği &amp; Uçtan Uca Ürün Geliştirme
+              </h3>
+              <p class="bento-card-text" data-i18n="about.card1.text">
+                Aydın Adnan Menderes Üniversitesi (ADÜ) <strong>Bilgisayar Mühendisliği</strong> eğitimim boyunca teorik algoritma ve veri yapısı temellerini doğrudan gerçek dünya ürünlerine dönüştürmeye odaklandım. Bir fikri yalnızca prototip aşamasında bırakmayıp; <strong>Apple App Store</strong>, <strong>Google Play Store</strong>, <strong>Apple Notary onaylı macOS DMG</strong> paketleri ve <strong>Vercel Serverless</strong> ortamlarında son kullanıcıya ulaşan canlı sistemler olarak yayınlıyorum.
+              </p>
+            </div>
+            <div class="bento-tag-list">
+              <span class="bento-tag">ADÜ Computer Engineering</span>
+              <span class="bento-tag">App Store &amp; Google Play</span>
+              <span class="bento-tag">Apple Notarized macOS</span>
+              <span class="bento-tag">Production Architecture</span>
+            </div>
+          </article>
+
+          <!-- Bento Card 2 -->
+          <article class="bento-card bento-span-5 reveal">
+            <div>
+              <div class="bento-icon-box emerald">
+                <i data-lucide="users" style="width:22px;height:22px;"></i>
+              </div>
+              <h3 class="bento-card-title" data-i18n="about.card2.title">
+                GDG on Campus ADÜ — Yazılım Core Team
+              </h3>
+              <p class="bento-card-text" data-i18n="about.card2.text">
+                <strong>Google Developer Groups (GDG) on Campus ADÜ</strong> bünyesinde <strong>Yazılım (Software) Core Team Üyesi</strong> olarak aktif görev alıyorum. Topluluk etkinliklerinde yüzlerce katılımcının ortak ilgi alanlarına göre masalara yerleştirildiği <strong>Info Session Akıllı Masa Eşleştirme Platformu</strong> gibi canlı yazılımlar geliştiriyor ve teknik içerik üretimine katkıda bulunuyorum.
+              </p>
+            </div>
+            <div class="bento-tag-list">
+              <span class="bento-tag">Google Developer Groups</span>
+              <span class="bento-tag">Software Core Team</span>
+              <span class="bento-tag">Community Engineering</span>
+            </div>
+          </article>
+
+          <!-- Bento Card 3 -->
+          <article class="bento-card bento-span-6 reveal">
+            <div>
+              <div class="bento-icon-box purple">
+                <i data-lucide="smartphone" style="width:22px;height:22px;"></i>
+              </div>
+              <h3 class="bento-card-title" data-i18n="about.card3.title">
+                Çapraz Platform &amp; Düşük Gecikmeli Ağ Mimarileri
+              </h3>
+              <p class="bento-card-text" data-i18n="about.card3.text">
+                <strong>Flutter &amp; Dart</strong>, <strong>SwiftUI (iOS)</strong>, <strong>Jetpack Compose (Android)</strong> ve <strong>Python PyQt6 (macOS)</strong> ile çoklu platform deneyimleri inşa ediyorum. WebSockets, Zeroconf/Bonjour (mDNS), ters TCP tünelleri ve macOS CoreGraphics (Quartz) API'leri ile milisaniye seviyesinde çalışan gerçek zamanlı sistemler tasarlıyorum.
+              </p>
+            </div>
+            <div class="bento-tag-list">
+              <span class="bento-tag">Flutter &amp; Dart</span>
+              <span class="bento-tag">SwiftUI &amp; Compose</span>
+              <span class="bento-tag">WebSockets &amp; Bonjour</span>
+              <span class="bento-tag">CoreGraphics (Quartz)</span>
+            </div>
+          </article>
+
+          <!-- Bento Card 4 -->
+          <article class="bento-card bento-span-6 reveal">
+            <div>
+              <div class="bento-icon-box amber">
+                <i data-lucide="cpu" style="width:22px;height:22px;"></i>
+              </div>
+              <h3 class="bento-card-title" data-i18n="about.card4.title">
+                Web Sistemleri, Masaüstü &amp; Gömülü IoT
+              </h3>
+              <p class="bento-card-text" data-i18n="about.card4.text">
+                Modern web tarafında <strong>React 19</strong>, <strong>Node.js/Express</strong> ve kurumsal <strong>ASP.NET Core MVC (Entity Framework Core, SQL Server)</strong> mimarileri; donanım tarafında ise <strong>ESP32 / ESP8266</strong> mikrodenetleyicileriyle Wi-Fi tabanlı <strong>IoT Kahve Makinesi Kontrolü</strong> ve hassas ADC sensör okuma devreleri geliştiriyorum.
+              </p>
+            </div>
+            <div class="bento-tag-list">
+              <span class="bento-tag">React 19 &amp; Node.js</span>
+              <span class="bento-tag">ASP.NET Core MVC</span>
+              <span class="bento-tag">ESP32 &amp; ESP8266 IoT</span>
+              <span class="bento-tag">Java Swing &amp; C/C++</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================================
+         TECH STACK SECTION
+         ================================================================== -->
+    <section class="section" id="skills">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-eyebrow">
+            <i data-lucide="code-2" style="width:15px;height:15px;"></i>
+            <span data-i18n="skills.eyebrow">Teknoloji Yığını</span>
+          </span>
+          <h2 class="section-title" data-i18n="skills.title">Kullandığım Diller, Frameworkler ve Araçlar</h2>
+          <p class="section-subtitle" data-i18n="skills.subtitle">
+            Mobil, Web, Masaüstü/Sistem ve Gömülü IoT projelerinde aktif olarak üretimde kullandığım teknolojiler.
+          </p>
+        </div>
+
+        <div class="stack-grid">
+          <!-- Category 1: Programming Languages -->
+          <div class="stack-category-card reveal">
+            <div class="stack-category-header">
+              <div class="bento-icon-box" style="margin-bottom:0;">
+                <i data-lucide="terminal" style="width:22px;height:22px;"></i>
+              </div>
+              <div>
+                <h3 class="stack-category-title" data-i18n="skills.cat1.title">Programlama Dilleri</h3>
+                <p class="stack-category-desc" data-i18n="skills.cat1.desc">Nesne yönelimli, sistem düzeyi ve modern uygulama dilleri</p>
+              </div>
+            </div>
+            <div class="tech-pills-wrap">
+              <span class="tech-pill"><span class="tech-dot"></span>Dart</span>
+              <span class="tech-pill"><span class="tech-dot"></span>Java</span>
+              <span class="tech-pill"><span class="tech-dot"></span>C</span>
+              <span class="tech-pill"><span class="tech-dot"></span>C++</span>
+              <span class="tech-pill"><span class="tech-dot"></span>Python</span>
+              <span class="tech-pill"><span class="tech-dot"></span>JavaScript (ES6+)</span>
+              <span class="tech-pill"><span class="tech-dot"></span>TypeScript</span>
+              <span class="tech-pill"><span class="tech-dot"></span>C#</span>
+              <span class="tech-pill"><span class="tech-dot"></span>Swift</span>
+              <span class="tech-pill"><span class="tech-dot"></span>Kotlin</span>
+              <span class="tech-pill"><span class="tech-dot"></span>HTML5 &amp; CSS3</span>
+              <span class="tech-pill"><span class="tech-dot"></span>SQL</span>
+            </div>
+          </div>
+
+          <!-- Category 2: Frameworks & Technologies -->
+          <div class="stack-category-card reveal">
+            <div class="stack-category-header">
+              <div class="bento-icon-box emerald" style="margin-bottom:0;">
+                <i data-lucide="blocks" style="width:22px;height:22px;"></i>
+              </div>
+              <div>
+                <h3 class="stack-category-title" data-i18n="skills.cat2.title">Frameworkler &amp; Teknolojiler</h3>
+                <p class="stack-category-desc" data-i18n="skills.cat2.desc">Çapraz platform mobil, modern web, masaüstü GUI ve otomasyon</p>
+              </div>
+            </div>
+            <div class="tech-pills-wrap">
+              <span class="tech-pill"><span class="tech-dot emerald"></span>Flutter (iOS, Android, Desktop)</span>
+              <span class="tech-pill"><span class="tech-dot emerald"></span>React 19 &amp; Vite</span>
+              <span class="tech-pill"><span class="tech-dot emerald"></span>ASP.NET Core MVC (.NET)</span>
+              <span class="tech-pill"><span class="tech-dot emerald"></span>Entity Framework Core</span>
+              <span class="tech-pill"><span class="tech-dot emerald"></span>SwiftUI</span>
+              <span class="tech-pill"><span class="tech-dot emerald"></span>Jetpack Compose (M3)</span>
+              <span class="tech-pill"><span class="tech-dot emerald"></span>PyQt6</span>
+              <span class="tech-pill"><span class="tech-dot emerald"></span>Node.js &amp; Express</span>
+              <span class="tech-pill"><span class="tech-dot emerald"></span>Tailwind CSS</span>
+              <span class="tech-pill"><span class="tech-dot emerald"></span>Java Swing</span>
+              <span class="tech-pill"><span class="tech-dot emerald"></span>Tampermonkey Userscripts</span>
+            </div>
+          </div>
+
+          <!-- Category 3: Database, Networking & DevOps -->
+          <div class="stack-category-card reveal">
+            <div class="stack-category-header">
+              <div class="bento-icon-box purple" style="margin-bottom:0;">
+                <i data-lucide="database" style="width:22px;height:22px;"></i>
+              </div>
+              <div>
+                <h3 class="stack-category-title" data-i18n="skills.cat3.title">Veritabanı, Ağ &amp; DevOps</h3>
+                <p class="stack-category-desc" data-i18n="skills.cat3.desc">İlişkisel veritabanları, gerçek zamanlı protokoller ve bulut dağıtımı</p>
+              </div>
+            </div>
+            <div class="tech-pills-wrap">
+              <span class="tech-pill"><span class="tech-dot purple"></span>Docker</span>
+              <span class="tech-pill"><span class="tech-dot purple"></span>Microsoft SQL Server</span>
+              <span class="tech-pill"><span class="tech-dot purple"></span>MySQL</span>
+              <span class="tech-pill"><span class="tech-dot purple"></span>PostgreSQL (Neon Serverless)</span>
+              <span class="tech-pill"><span class="tech-dot purple"></span>WebSockets (Asyncio)</span>
+              <span class="tech-pill"><span class="tech-dot purple"></span>Zeroconf / Bonjour (mDNS)</span>
+              <span class="tech-pill"><span class="tech-dot purple"></span>Git &amp; GitHub Actions</span>
+              <span class="tech-pill"><span class="tech-dot purple"></span>Vercel &amp; Oracle Cloud VPS</span>
+            </div>
+          </div>
+
+          <!-- Category 4: Hardware & Embedded IoT -->
+          <div class="stack-category-card reveal">
+            <div class="stack-category-header">
+              <div class="bento-icon-box amber" style="margin-bottom:0;">
+                <i data-lucide="microchip" style="width:22px;height:22px;"></i>
+              </div>
+              <div>
+                <h3 class="stack-category-title" data-i18n="skills.cat4.title">Donanım &amp; Gömülü IoT</h3>
+                <p class="stack-category-desc" data-i18n="skills.cat4.desc">Mikrodenetleyici programlama, sensör/röle kontrolü ve sinyal işleme</p>
+              </div>
+            </div>
+            <div class="tech-pills-wrap">
+              <span class="tech-pill"><span class="tech-dot amber"></span>ESP32</span>
+              <span class="tech-pill"><span class="tech-dot amber"></span>ESP8266 (NodeMCU)</span>
+              <span class="tech-pill"><span class="tech-dot amber"></span>Arduino C/C++</span>
+              <span class="tech-pill"><span class="tech-dot amber"></span><span data-i18n="skills.iot.coffee">IoT Kahve Makinesi Kontrolü</span></span>
+              <span class="tech-pill"><span class="tech-dot amber"></span><span data-i18n="skills.iot.adc">64x Örneklemeli ADC Sensör &amp; Direnç Ölçümü</span></span>
+              <span class="tech-pill"><span class="tech-dot amber"></span><span data-i18n="skills.iot.relay">Wi-Fi Röle &amp; Durum Makinesi Otomasyonu</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================================
+         FEATURED PROJECT SPOTLIGHT: MAC REMOTE (DESKTOP REMOTE)
+         ================================================================== -->
+    <section class="section" id="featured">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-eyebrow">
+            <i data-lucide="sparkles" style="width:15px;height:15px;"></i>
+            <span data-i18n="featured.eyebrow">Vitrin Projesi · Mağazalarda Yayında</span>
+          </span>
+          <h2 class="section-title" data-i18n="featured.title">Öne Çıkan Ürün: Mac Remote (Desktop Remote)</h2>
+          <p class="section-subtitle" data-i18n="featured.subtitle">
+            iOS (iPhone &amp; iPad) ve Android cihazları macOS için ultra düşük gecikmeli kablosuz trackpad, klavye, medya kumandası ve 2200p canlı ekran yansıtıcısına dönüştüren çapraz platform ekosistem.
+          </p>
+        </div>
+
+        <article class="featured-spotlight reveal">
+          <div class="featured-grid">
+            <!-- Left Column: Details, Architecture Highlights & Store Buttons -->
+            <div>
+              <div class="featured-top-badges">
+                <span class="featured-badge live">
+                  <span class="pulse-dot"></span>
+                  <span data-i18n="featured.badge.live">Google Play &amp; App Store'da Yayında</span>
+                </span>
+                <span class="featured-badge version">v1.5.0 · macOS | iOS | Android</span>
+                <span class="featured-badge version" data-i18n="featured.badge.notarized">Apple Developer ID İmzalı &amp; Notarized DMG</span>
+              </div>
+
+              <h3 class="featured-title">🍎 Mac Remote &amp; Desktop Remote</h3>
+              <p class="featured-tagline" data-i18n="featured.card.tagline">
+                iOS, Android ve macOS Arasında Milisaniye Seviyesinde Kablosuz Kontrol &amp; Ekran Aktarımı
+              </p>
+              <p class="featured-desc" data-i18n="featured.card.desc">
+                Mac Remote; yerel Wi-Fi (Zeroconf/Bonjour mDNS) veya internet (Oracle Cloud VPS üzerinde izole ters TCP tüneli + QR kod eşleştirme) üzerinden çalışan, donanım düzeyinde macOS CoreGraphics (Quartz) girdi enjeksiyonuna ve GPU hızlandırmalı canlı ekran yansıtmasına sahip uçtan uca bir üründür.
+              </p>
+
+              <ul class="featured-highlights">
+                <li class="featured-highlight-item">
+                  <i data-lucide="mouse-pointer-click" style="width:18px;height:18px;"></i>
+                  <span data-i18n="featured.hl1">Alt piksel hassasiyetinde macOS CoreGraphics (Quartz) çoklu dokunma trackpad ve sürükle-bırak emülasyonu</span>
+                </li>
+                <li class="featured-highlight-item">
+                  <i data-lucide="monitor-play" style="width:18px;height:18px;"></i>
+                  <span data-i18n="featured.hl2">800p Akıcı moddan 2200p Ultra HD kademesine kadar gerçek zamanlı JPEG ekran akışı ve sıkıştırma kontrolü</span>
+                </li>
+                <li class="featured-highlight-item">
+                  <i data-lucide="wifi" style="width:18px;height:18px;"></i>
+                  <span data-i18n="featured.hl3">Zeroconf / Bonjour (_macremote._tcp) ile sıfır ayarlı LAN keşfi ve ters TCP tüneli ile WAN uzaktan erişim</span>
+                </li>
+                <li class="featured-highlight-item">
+                  <i data-lucide="shield-check" style="width:18px;height:18px;"></i>
+                  <span data-i18n="featured.hl4">Dinamik 4 haneli PIN doğrulaması, yerel SwiftUI (iOS), Jetpack Compose (Android) ve PyQt6 (macOS) istemcileri</span>
+                </li>
+              </ul>
+
+              <!-- Official Store & Release Action Buttons -->
+              <div class="store-buttons-row">
+                <a href="https://play.google.com/store/apps/details?id=com.ibrahimtemur.macremote" target="_blank" rel="noopener noreferrer" class="store-btn primary-store">
+                  <i data-lucide="play" style="width:20px;height:20px;"></i>
+                  <span>
+                    <span class="store-btn-sub" data-i18n="featured.btn.play.sub">ANDROID İSTEMCİSİ</span>
+                    <span class="store-btn-main" data-i18n="featured.btn.play.main">Google Play'den İndir</span>
+                  </span>
+                </a>
+
+                <a href="https://apps.apple.com/tr/app/desktop-remote/id6812348430?l=tr" target="_blank" rel="noopener noreferrer" class="store-btn primary-store">
+                  <i data-lucide="apple" style="width:20px;height:20px;"></i>
+                  <span>
+                    <span class="store-btn-sub" data-i18n="featured.btn.ios.sub">iOS &amp; iPadOS İSTEMCİSİ</span>
+                    <span class="store-btn-main" data-i18n="featured.btn.ios.main">App Store'dan İndir</span>
+                  </span>
+                </a>
+
+                <a href="https://github.com/ibrahimtemur/mac-remote-app/releases/latest" target="_blank" rel="noopener noreferrer" class="store-btn">
+                  <i data-lucide="download" style="width:20px;height:20px;"></i>
+                  <span>
+                    <span class="store-btn-sub" data-i18n="featured.btn.dmg.sub">macOS SUNUCU (v1.5.0)</span>
+                    <span class="store-btn-main" data-i18n="featured.btn.dmg.main">Mac DMG İndir</span>
+                  </span>
+                </a>
+
+                <a href="https://github.com/ibrahimtemur/mac-remote-app" target="_blank" rel="noopener noreferrer" class="store-btn">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                  <span class="store-btn-main" data-i18n="featured.btn.repo">GitHub Kaynak Kodu</span>
+                </a>
+              </div>
+
+              <div class="bento-tag-list">
+                <span class="bento-tag">Python 3.9+ &amp; PyQt6</span>
+                <span class="bento-tag">SwiftUI &amp; Network.framework</span>
+                <span class="bento-tag">Kotlin &amp; Jetpack Compose</span>
+                <span class="bento-tag">macOS CoreGraphics (Quartz)</span>
+                <span class="bento-tag">Asyncio WebSockets</span>
+                <span class="bento-tag">Zeroconf / Bonjour</span>
+              </div>
+            </div>
+
+            <!-- Right Column: Interactive Bilingual Screenshot Switcher -->
+            <div class="featured-preview-box">
+              <div class="preview-tabs" role="tablist" aria-label="Mac Remote Screenshots">
+                <button type="button" class="preview-tab active" data-screen-idx="0" data-i18n="featured.tab1">
+                  1. Cihaz Keşfi &amp; Bağlantı
+                </button>
+                <button type="button" class="preview-tab" data-screen-idx="1" data-i18n="featured.tab2">
+                  2. Trackpad &amp; Canlı Ekran
+                </button>
+                <button type="button" class="preview-tab" data-screen-idx="2" data-i18n="featured.tab3">
+                  3. macOS Sunucu Paneli
+                </button>
+              </div>
+
+              <div class="preview-image-frame">
+                <img
+                  id="featuredPreviewImg"
+                  src="https://raw.githubusercontent.com/ibrahimtemur/mac-remote-app/main/screenshots/tr1.png"
+                  alt="Mac Remote Uygulama Ekran Görüntüsü"
+                  loading="lazy"
+                />
+              </div>
+
+              <p class="preview-caption" id="featuredPreviewCaption">
+                Zeroconf/Bonjour otomatik Mac keşfi, QR kod ile WAN eşleştirme ve 4 haneli PIN girişi
+              </p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ==================================================================
+         FILTERABLE PROJECTS & LIVE GITHUB SYNC SECTION
+         ================================================================== -->
+    <section class="section" id="projects">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-eyebrow">
+            <i data-lucide="folder-git-2" style="width:15px;height:15px;"></i>
+            <span data-i18n="projects.eyebrow">Açık Kaynak &amp; Mühendislik Portföyü</span>
+          </span>
+          <h2 class="section-title" data-i18n="projects.title">Projelerim ve Geliştirdiğim Sistemler</h2>
+          <p class="section-subtitle" data-i18n="projects.subtitle">
+            Mobil uygulamalardan algoritmik Full-Stack web platformlarına, kurumsal ASP.NET Core MVC sistemlerinden ESP32/ESP8266 IoT donanım projelerine kadar tüm çalışmalarım.
+          </p>
+        </div>
+
+        <div class="projects-toolbar reveal">
+          <div class="filter-tabs" role="tablist" aria-label="Proje Kategorileri">
+            <button type="button" class="filter-btn active" data-filter="all" data-i18n="filter.all">Tümü</button>
+            <button type="button" class="filter-btn" data-filter="mobile" data-i18n="filter.mobile">Mobil (Flutter &amp; Native)</button>
+            <button type="button" class="filter-btn" data-filter="web" data-i18n="filter.web">Web Geliştirme</button>
+            <button type="button" class="filter-btn" data-filter="desktop" data-i18n="filter.desktop">Masaüstü &amp; Sistem</button>
+            <button type="button" class="filter-btn" data-filter="iot" data-i18n="filter.iot">IoT &amp; Gömülü Sistemler</button>
+          </div>
+
+          <div class="github-sync-status" id="githubSyncStatus">
+            <span class="pulse-dot"></span>
+            <span id="githubSyncText" data-i18n="github.syncing">GitHub API ile senkronize ediliyor...</span>
+          </div>
+        </div>
+
+        <!-- Dynamic Projects Grid rendered by script.js -->
+        <div class="projects-grid" id="projectsGrid" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- ==================================================================
+         CONTACT SECTION
+         ================================================================== -->
+    <section class="section" id="contact">
+      <div class="container">
+        <div class="contact-wrapper reveal">
+          <div class="contact-top-grid">
+            <div>
+              <span class="section-eyebrow" style="margin-bottom:0.85rem;">
+                <i data-lucide="message-square-code" style="width:15px;height:15px;"></i>
+                <span data-i18n="contact.eyebrow">İletişim &amp; İş Birliği</span>
+              </span>
+              <h2 class="section-title" style="margin-bottom:0.65rem;" data-i18n="contact.title">
+                Birlikte Yeni Bir Ürün Geliştirelim
+              </h2>
+              <p class="section-subtitle" data-i18n="contact.subtitle">
+                Yazılım mühendisliği fırsatları, açık kaynak projeler, GDG topluluk etkinlikleri veya teknik iş birlikleri için benimle doğrudan iletişime geçebilirsiniz.
+              </p>
+            </div>
+
+            <div class="email-copy-box">
+              <span class="email-address" id="emailAddressText">ibrahimtemur847@gmail.com</span>
+              <div class="email-actions">
+                <button type="button" class="btn btn-primary btn-sm" id="copyEmailBtn">
+                  <i data-lucide="copy" style="width:16px;height:16px;"></i>
+                  <span id="copyEmailBtnText" data-i18n="contact.copy">E-postayı Kopyala</span>
+                </button>
+                <a href="mailto:ibrahimtemur847@gmail.com" class="btn btn-secondary btn-sm">
+                  <i data-lucide="mail" style="width:16px;height:16px;"></i>
+                  <span data-i18n="contact.send">E-posta Gönder</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Social Media Bento Cards -->
+          <div class="social-cards-grid">
+            <a href="https://github.com/ibrahimtemur" target="_blank" rel="noopener noreferrer" class="social-bento-card">
+              <div class="social-bento-top">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+                <i data-lucide="arrow-up-right" style="width:16px;height:16px;"></i>
+              </div>
+              <span class="social-bento-name">GitHub</span>
+              <span class="social-bento-handle">@ibrahimtemur</span>
+            </a>
+
+            <a href="https://www.linkedin.com/in/ibrahim-temur/" target="_blank" rel="noopener noreferrer" class="social-bento-card">
+              <div class="social-bento-top">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+                <i data-lucide="arrow-up-right" style="width:16px;height:16px;"></i>
+              </div>
+              <span class="social-bento-name">LinkedIn</span>
+              <span class="social-bento-handle">/in/ibrahim-temur</span>
+            </a>
+
+            <a href="mailto:ibrahimtemur847@gmail.com" class="social-bento-card">
+              <div class="social-bento-top">
+                <i data-lucide="mail" style="width:22px;height:22px;"></i>
+                <i data-lucide="arrow-up-right" style="width:16px;height:16px;"></i>
+              </div>
+              <span class="social-bento-name">Email</span>
+              <span class="social-bento-handle">ibrahimtemur847@gmail.com</span>
+            </a>
+
+            <a href="https://x.com/ibrahim_temur_" target="_blank" rel="noopener noreferrer" class="social-bento-card">
+              <div class="social-bento-top">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                <i data-lucide="arrow-up-right" style="width:16px;height:16px;"></i>
+              </div>
+              <span class="social-bento-name">X (Twitter)</span>
+              <span class="social-bento-handle">@ibrahim_temur_</span>
+            </a>
+
+            <a href="https://www.instagram.com/ibrahimtemurr_/" target="_blank" rel="noopener noreferrer" class="social-bento-card">
+              <div class="social-bento-top">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                <i data-lucide="arrow-up-right" style="width:16px;height:16px;"></i>
+              </div>
+              <span class="social-bento-name">Instagram</span>
+              <span class="social-bento-handle">@ibrahimtemurr_</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ====================================================================
+       FOOTER
+       ==================================================================== -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p data-i18n="footer.rights">© 2026 İbrahim Temur. Tüm hakları saklıdır.</p>
+      <p data-i18n="footer.built">GitHub Pages için modern HTML5, CSS3 ve Vanilla JS ile tasarlandı.</p>
+    </div>
+  </footer>
+
+  <!-- Toast Notification for Clipboard Copy -->
+  <div class="toast" id="toastNotification" role="status" aria-live="polite">
+    <i data-lucide="check-circle-2" style="width:20px;height:20px;color:var(--accent-emerald);"></i>
+    <span id="toastText">E-posta adresi panoya kopyalandı!</span>
+  </div>
+
+  <!-- Interactive Engine -->
+  <script src="script.js"></script>
+</body>
+</html>
