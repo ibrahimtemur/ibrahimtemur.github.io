@@ -13,10 +13,10 @@
   <meta property="og:url" content="https://ibrahimtemur.github.io/" />
   <meta property="og:title" content="İbrahim Temur — Software Developer & Computer Engineering" />
   <meta property="og:description" content="Cross-Platform Mobile & Desktop (Flutter, SwiftUI, Jetpack Compose, PyQt6), Full-Stack Web (React, ASP.NET Core MVC, Node.js) & IoT/Embedded Systems." />
-  <meta property="og:image" content="https://avatars.githubusercontent.com/u/83337424?v=4" />
+  <meta property="og:image" content="https://ibrahimtemur.github.io/avatar.jpg" />
 
-  <!-- Dynamic SVG Favicon -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%233b82f6'/%3E%3Cstop offset='100%25' stop-color='%2310b981'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='monospace' font-weight='bold' font-size='26'%3EIT%3C/text%3E%3C/svg%3E" />
+  <!-- Favicon -->
+  <link rel="icon" type="image/jpeg" href="avatar.jpg" />
 
   <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -39,7 +39,14 @@
   <header class="navbar" id="navbar">
     <div class="container nav-inner">
       <a href="#top" class="brand" aria-label="İbrahim Temur Home">
-        <span class="brand-mark">&lt;IT/&gt;</span>
+        <span class="brand-mark">
+          <img
+            src="avatar.jpg"
+            alt="İbrahim Temur"
+            class="brand-avatar-img"
+            onerror="this.onerror=null;this.src='https://github.com/ibrahimtemur.png';"
+          />
+        </span>
         <span class="brand-text">
           <span>İbrahim Temur</span>
           <span class="brand-role" data-i18n="nav.role">Software &amp; Systems</span>
@@ -153,7 +160,28 @@
               <span class="terminal-dot green"></span>
             </div>
             <span class="terminal-title">ibrahim_temur.profile.ts</span>
-            <span class="font-mono" style="font-size:0.72rem;color:var(--accent-emerald);">● LIVE</span>
+            <span class="terminal-live-badge"><span class="terminal-live-dot"></span>LIVE</span>
+          </div>
+          <div class="terminal-profile-header">
+            <div class="profile-avatar">
+              <img
+                src="avatar.jpg"
+                onerror="this.onerror=null;this.src='https://github.com/ibrahimtemur.png';"
+                alt="İbrahim Temur"
+                loading="eager"
+              />
+              <span class="avatar-status-dot" title="Available for engineering projects"></span>
+            </div>
+            <div class="profile-meta">
+              <div class="profile-name-row">
+                <h2 class="profile-name">İbrahim Temur</h2>
+                <span class="profile-verified-tag">SYS_ENG</span>
+              </div>
+              <p class="profile-sub" data-i18n="hero.profile.sub">ADÜ Bilgisayar Mühendisliği · GDG Core Team</p>
+              <a href="https://github.com/ibrahimtemur" target="_blank" rel="noopener noreferrer" class="profile-handle">
+                github.com/ibrahimtemur ↗
+              </a>
+            </div>
           </div>
           <div class="terminal-body">
             <span class="code-line"><span class="code-keyword">const</span> <span class="code-key">developer</span> = {</span>
