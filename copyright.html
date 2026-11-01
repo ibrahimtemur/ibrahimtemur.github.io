@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Telif Hakkı & Yasal Bildirim — İbrahim Temur</title>
+  <meta name="description" content="İbrahim Temur kişisel portföyü, projeleri ve kaynak kodlarına dair telif hakkı, fikri mülkiyet ve açık kaynak lisans bildirimleri." />
+  <meta name="author" content="İbrahim Temur" />
+
+  <!-- Favicon: Modern Code Monogram & Fallbacks -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="alternate icon" type="image/png" href="favicon.png" />
+  <link rel="apple-touch-icon" href="favicon.png" />
+
+  <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    .legal-container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 7rem 1.5rem 4rem;
+    }
+    .legal-header {
+      margin-bottom: 2.5rem;
+      text-align: left;
+    }
+    .back-btn-wrap {
+      margin-bottom: 1.5rem;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .back-btn:hover {
+      color: var(--text-primary);
+      border-color: var(--border-accent);
+      transform: translateX(-3px);
+    }
+    .legal-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-card);
+      backdrop-filter: blur(12px);
+    }
+    .legal-card h2 {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+    .legal-card h2 i {
+      color: var(--accent-emerald);
+    }
+    .legal-card p, .legal-card li {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+    }
+    .legal-card ul {
+      padding-left: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    .legal-card li {
+      margin-bottom: 0.4rem;
+    }
+    .legal-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--bg-badge);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <!-- Ambient Background Grid & Glow -->
+  <div class="ambient-bg" aria-hidden="true"></div>
+
+  <!-- Sticky Glassmorphic Navbar -->
+  <header class="navbar" id="navbar">
+    <div class="container nav-inner">
+      <a href="index.html#top" class="brand" aria-label="İbrahim Temur Home">
+        <span class="brand-mark">
+          <img
+            src="avatar.jpg?v=2"
+            alt="İbrahim Temur"
+            class="brand-avatar-img"
+          />
+        </span>
+        <span class="brand-text">
+          <span>İbrahim Temur</span>
+          <span class="brand-role" data-i18n="nav.role">Software &amp; Systems</span>
+        </span>
+      </a>
+
+      <div class="nav-controls">
+        <a href="index.html" class="back-btn" style="margin-bottom:0;">
+          <i data-lucide="arrow-left" style="width:16px;height:16px;"></i>
+          <span data-i18n="legal.back">Portföye Dön</span>
+        </a>
+
+        <!-- Bilingual Switcher (TR | EN) -->
+        <div class="lang-switch" role="group" aria-label="Language Switcher">
+          <button type="button" class="lang-btn active" id="langTrBtn" data-lang="tr" aria-label="Türkçe">TR</button>
+          <button type="button" class="lang-btn" id="langEnBtn" data-lang="en" aria-label="English">EN</button>
+        </div>
+
+        <!-- Dark / Light Mode Toggle -->
+        <button type="button" class="icon-control-btn" id="themeToggleBtn" aria-label="Toggle Dark/Light Theme">
+          <i data-lucide="sun" id="themeIcon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="legal-container">
+    <div class="back-btn-wrap">
+      <a href="index.html" class="back-btn">
+        <i data-lucide="arrow-left" style="width:16px;height:16px;"></i>
+        <span data-i18n="legal.back">Portföye Dön</span>
+      </a>
+    </div>
+
+    <div class="legal-header">
+      <span class="section-eyebrow">
+        <i data-lucide="shield-check" style="width:15px;height:15px;"></i>
+        <span data-i18n="legal.eyebrow">Yasal &amp; Fikri Mülkiyet</span>
+      </span>
+      <h1 class="section-title" data-i18n="legal.title">Telif Hakkı &amp; Lisans Bildirimi</h1>
+      <p class="section-subtitle" data-i18n="legal.subtitle">
+        Bu web sitesinde yer alan kişisel portföy tasarımı, kaynak kodları, projeler ve fikri mülkiyet haklarına ilişkin genel bilgilendirme.
+      </p>
+    </div>
+
+    <!-- Section 1: Genel Telif Hakkı -->
+    <article class="legal-card">
+      <h2>
+        <i data-lucide="copyright" style="width:22px;height:22px;"></i>
+        <span data-i18n="legal.sec1.title">© 2026 İbrahim Temur — Tüm Hakları Saklıdır</span>
+      </h2>
+      <p data-i18n="legal.sec1.p1">
+        Bu web sitesinin (<strong>ibrahimtemur.github.io</strong>) görsel tasarımı, sayfa düzeni, tipografi hiyerarşisi, kişisel fotoğraflar, özgün metinler, stil dosyaları (CSS) ve istemci tarafı mantığı (JS) aksi belirtilmedikçe <strong>İbrahim Temur</strong>'un mülkiyetindedir ve uluslararası telif hakkı yasaları ile korunmaktadır.
+      </p>
+      <div style="margin-top: 1rem;">
+        <span class="legal-badge-pill">
+          <i data-lucide="git-branch" style="width:13px;height:13px;"></i>
+          Repo: ibrahimtemur/ibrahimtemur.github.io
+        </span>
+      </div>
+    </article>
+
+    <!-- Section 2: Açık Kaynak Projeler ve GitHub Depoları -->
+    <article class="legal-card">
+      <h2>
+        <i data-lucide="folder-git-2" style="width:22px;height:22px;"></i>
+        <span data-i18n="legal.sec2.title">Açık Kaynak Projeler ve GitHub Depoları</span>
+      </h2>
+      <p data-i18n="legal.sec2.p1">
+        Portföyde tanıtılan ve <a href="https://github.com/ibrahimtemur" target="_blank" rel="noopener noreferrer" style="color:var(--accent-emerald);font-weight:600;">GitHub (@ibrahimtemur)</a> üzerinde herkese açık olarak paylaşılan projeler (örn. <em>Mac Remote</em>, <em>GDG Info Session</em> vb.), ilgili depolarda belirtilen açık kaynak lisanslarına (örn. <strong>MIT</strong>, <strong>Apache 2.0</strong> veya <strong>GPL</strong>) tabidir.
+      </p>
+      <ul data-i18n="legal.sec2.list">
+        <li>Açık kaynak projeler, ilgili lisans kuralları çerçevesinde incelenebilir, çatallanabilir (fork) ve katkıda bulunulabilir.</li>
+        <li>Telif hakkı bildirimleri ve yazar atıfları silinemez veya değiştirilemez.</li>
+        <li>Mağazalarda yayınlanan resmi paketler (App Store, Google Play Store ve Apple Notarized DMG) tescilli ürün haklarına tabidir.</li>
+      </ul>
+    </article>
+
+    <!-- Section 3: Kullanım İzinleri ve Kısıtlamalar -->
+    <article class="legal-card">
+      <h2>
+        <i data-lucide="file-text" style="width:22px;height:22px;"></i>
+        <span data-i18n="legal.sec3.title">Kullanım İzinleri ve Kısıtlamalar</span>
+      </h2>
+      <ul data-i18n="legal.sec3.list">
+        <li><strong>Kişisel ve Eğitici Amaçlı İnceleme:</strong> Bu sitenin mimarisi ve kod yapısı eğitici amaçlarla incelenebilir.</li>
+        <li><strong>Yeniden Dağıtım ve Klonlama:</strong> Sitedeki kişisel kimlik bilgileri, fotoğraflar, proje metinleri ve iletişim kanalları izinsiz olarak kopyalanamaz, klonlanamaz ve farklı bir kimlik altında ticari olarak yayınlanamaz.</li>
+        <li><strong>Üçüncü Taraf Kütüphaneler:</strong> Sitede kullanılan Lucide Icons, Google Fonts ve diğer açık kaynak kütüphaneler kendi lisans koşullarına tabidir.</li>
+      </ul>
+    </article>
+
+    <!-- Section 4: İletişim ve Lisans Talepleri -->
+    <article class="legal-card">
+      <h2>
+        <i data-lucide="mail" style="width:22px;height:22px;"></i>
+        <span data-i18n="legal.sec4.title">İletişim ve Lisans Talepleri</span>
+      </h2>
+      <p data-i18n="legal.sec4.p1">
+        Telif hakları, ticari iş birlikleri, özel lisanslama veya içerik kullanımıyla ilgili sorularınız için doğrudan iletişime geçebilirsiniz:
+      </p>
+      <p style="margin-bottom:0;">
+        <strong>E-posta:</strong> <a href="mailto:ibrahimtemur847@gmail.com" style="color:var(--text-primary);font-family:'JetBrains Mono',monospace;">ibrahimtemur847@gmail.com</a><br />
+        <strong>GitHub:</strong> <a href="https://github.com/ibrahimtemur" target="_blank" rel="noopener noreferrer" style="color:var(--text-primary);font-family:'JetBrains Mono',monospace;">github.com/ibrahimtemur ↗</a>
+      </p>
+    </article>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p>
+        <a href="copyright.html" class="footer-link" data-i18n="footer.rights">
+          © 2026 İbrahim Temur. Tüm hakları saklıdır.
+        </a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Lightweight theme & i18n handler for copyright.html
+    const I18N_LEGAL = {
+      tr: {
+        "nav.role": "Yazılım & Sistem",
+        "legal.back": "Portföye Dön",
+        "legal.eyebrow": "Yasal & Fikri Mülkiyet",
+        "legal.title": "Telif Hakkı & Lisans Bildirimi",
+        "legal.subtitle": "Bu web sitesinde yer alan kişisel portföy tasarımı, kaynak kodları, projeler ve fikri mülkiyet haklarına ilişkin genel bilgilendirme.",
+        "legal.sec1.title": "© 2026 İbrahim Temur — Tüm Hakları Saklıdır",
+        "legal.sec1.p1": "Bu web sitesinin (<strong>ibrahimtemur.github.io</strong>) görsel tasarımı, sayfa düzeni, tipografi hiyerarşisi, kişisel fotoğraflar, özgün metinler, stil dosyaları (CSS) ve istemci tarafı mantığı (JS) aksi belirtilmedikçe <strong>İbrahim Temur</strong>'un mülkiyetindedir ve uluslararası telif hakkı yasaları ile korunmaktadır.",
+        "legal.sec2.title": "Açık Kaynak Projeler ve GitHub Depoları",
+        "legal.sec2.p1": "Portföyde tanıtılan ve <a href=\"https://github.com/ibrahimtemur\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color:var(--accent-emerald);font-weight:600;\">GitHub (@ibrahimtemur)</a> üzerinde herkese açık olarak paylaşılan projeler (örn. <em>Mac Remote</em>, <em>GDG Info Session</em> vb.), ilgili depolarda belirtilen açık kaynak lisanslarına (örn. <strong>MIT</strong>, <strong>Apache 2.0</strong> veya <strong>GPL</strong>) tabidir.",
+        "legal.sec2.list": "<li>Açık kaynak projeler, ilgili lisans kuralları çerçevesinde incelenebilir, çatallanabilir (fork) ve katkıda bulunulabilir.</li><li>Telif hakkı bildirimleri ve yazar atıfları silinemez veya değiştirilemez.</li><li>Mağazalarda yayınlanan resmi paketler (App Store, Google Play Store ve Apple Notarized DMG) tescilli ürün haklarına tabidir.</li>",
+        "legal.sec3.title": "Kullanım İzinleri ve Kısıtlamalar",
+        "legal.sec3.list": "<li><strong>Kişisel ve Eğitici Amaçlı İnceleme:</strong> Bu sitenin mimarisi ve kod yapısı eğitici amaçlarla incelenebilir.</li><li><strong>Yeniden Dağıtım ve Klonlama:</strong> Sitedeki kişisel kimlik bilgileri, fotoğraflar, proje metinleri ve iletişim kanalları izinsiz olarak kopyalanamaz, klonlanamaz ve farklı bir kimlik altında ticari olarak yayınlanamaz.</li><li><strong>Üçüncü Taraf Kütüphaneler:</strong> Sitede kullanılan Lucide Icons, Google Fonts ve diğer açık kaynak kütüphaneler kendi lisans koşullarına tabidir.</li>",
+        "legal.sec4.title": "İletişim ve Lisans Talepleri",
+        "legal.sec4.p1": "Telif hakları, ticari iş birlikleri, özel lisanslama veya içerik kullanımıyla ilgili sorularınız için doğrudan iletişime geçebilirsiniz:",
+        "footer.rights": "© 2026 İbrahim Temur. Tüm hakları saklıdır."
+      },
+      en: {
+        "nav.role": "Software & Systems",
+        "legal.back": "Back to Portfolio",
+        "legal.eyebrow": "Legal & Intellectual Property",
+        "legal.title": "Copyright & Licensing Notice",
+        "legal.subtitle": "General notice regarding personal portfolio design, source code, projects, and intellectual property rights.",
+        "legal.sec1.title": "© 2026 İbrahim Temur — All Rights Reserved",
+        "legal.sec1.p1": "The visual design, layouts, typographic hierarchy, personal photography, original prose, stylesheet code (CSS), and client-side logic (JS) of this website (<strong>ibrahimtemur.github.io</strong>) are the exclusive property of <strong>İbrahim Temur</strong> unless otherwise noted, protected under international copyright law.",
+        "legal.sec2.title": "Open Source Projects & GitHub Repositories",
+        "legal.sec2.p1": "Projects showcased in this portfolio and published publicly on <a href=\"https://github.com/ibrahimtemur\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color:var(--accent-emerald);font-weight:600;\">GitHub (@ibrahimtemur)</a> (e.g. <em>Mac Remote</em>, <em>GDG Info Session</em>, etc.) are governed by their respective open-source licenses (e.g., <strong>MIT</strong>, <strong>Apache 2.0</strong>, or <strong>GPL</strong>).",
+        "legal.sec2.list": "<li>Open source repositories may be inspected, forked, and contributed to according to their individual license terms.</li><li>Original copyright notices and author attributions must remain intact.</li><li>Official store distribution packages (App Store, Google Play Store, and Apple Notarized DMGs) remain proprietary releases.</li>",
+        "legal.sec3.title": "Permitted Use & Restrictions",
+        "legal.sec3.list": "<li><strong>Personal & Educational Inspection:</strong> Code architecture may be referenced for learning and educational study.</li><li><strong>Redistribution & Cloning:</strong> Personal branding, likeness, headshots, project descriptions, and direct identity materials may not be duplicated or repurposed commercially under another identity.</li><li><strong>Third-Party Assets:</strong> Lucide Icons, Google Fonts, and third-party dependencies are licensed by their respective creators.</li>",
+        "legal.sec4.title": "Contact & Licensing Inquiries",
+        "legal.sec4.p1": "For inquiries regarding commercial licensing, permissions, or collaborative usage, feel free to get in touch:",
+        "footer.rights": "© 2026 İbrahim Temur. All rights reserved."
+      }
+    };
+
+    let currentLang = localStorage.getItem("portfolio_lang") || "tr";
+    let currentTheme = localStorage.getItem("portfolio_theme") || "dark";
+
+    function applyTheme(theme) {
+      currentTheme = theme;
+      document.documentElement.setAttribute("data-theme", theme);
+      localStorage.setItem("portfolio_theme", theme);
+      const icon = document.getElementById("themeIcon");
+      if (icon) icon.setAttribute("data-lucide", theme === "dark" ? "sun" : "moon");
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function applyLanguage(lang) {
+      currentLang = lang === "en" ? "en" : "tr";
+      document.documentElement.setAttribute("lang", currentLang);
+      localStorage.setItem("portfolio_lang", currentLang);
+      const dict = I18N_LEGAL[currentLang];
+      document.querySelectorAll("[data-i18n]").forEach(el => {
+        const k = el.getAttribute("data-i18n");
+        if (dict && dict[k] !== undefined) el.innerHTML = dict[k];
+      });
+      const trBtn = document.getElementById("langTrBtn");
+      const enBtn = document.getElementById("langEnBtn");
+      if (trBtn && enBtn) {
+        trBtn.classList.toggle("active", currentLang === "tr");
+        enBtn.classList.toggle("active", currentLang === "en");
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      applyTheme(currentTheme);
+      applyLanguage(currentLang);
+      document.getElementById("themeToggleBtn")?.addEventListener("click", () => {
+        applyTheme(currentTheme === "dark" ? "light" : "dark");
+      });
+      document.querySelectorAll(".lang-btn").forEach(btn => {
+        btn.addEventListener("click", () => applyLanguage(btn.getAttribute("data-lang")));
+      });
+      if (window.lucide) lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

@@ -1574,17 +1574,21 @@ button {
 }
 
 .footer-link {
-  color: var(--text-primary);
-  font-weight: 600;
+  color: var(--text-muted);
+  font-weight: 500;
   text-decoration: none;
-  position: relative;
-  transition: color 0.2s ease, text-decoration-color 0.2s ease;
-  padding: 0.1rem 0.25rem;
-  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
 }
 
 .footer-link:hover {
   color: var(--text-primary);
+  background: var(--bg-surface-hover);
   text-decoration: underline;
   text-decoration-color: var(--accent-emerald);
   text-underline-offset: 4px;
