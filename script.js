@@ -152,8 +152,7 @@ Object.assign(I18N.tr, {
   "contact.copied": "Kopyalandı!",
   "contact.send": "E-posta Gönder",
   "toast.copied": "E-posta adresi panoya kopyalandı: ibrahimtemur847@gmail.com",
-  "footer.rights": "© 2026 İbrahim Temur. Tüm hakları saklıdır.",
-  "footer.built": "GitHub Pages için modern HTML5, CSS3 ve Vanilla JS ile tasarlandı."
+  "footer.rights": '© 2026 <a href="https://github.com/ibrahimtemur" target="_blank" rel="noopener noreferrer" class="footer-link">İbrahim Temur</a>. Tüm hakları saklıdır.'
 });
 
 Object.assign(I18N.en, {
@@ -215,8 +214,7 @@ Object.assign(I18N.en, {
   "contact.copied": "Copied!",
   "contact.send": "Send Email",
   "toast.copied": "Email copied to clipboard: ibrahimtemur847@gmail.com",
-  "footer.rights": "© 2026 İbrahim Temur. All rights reserved.",
-  "footer.built": "Engineered for GitHub Pages with semantic HTML5, CSS3 & Vanilla JS."
+  "footer.rights": '© 2026 <a href="https://github.com/ibrahimtemur" target="_blank" rel="noopener noreferrer" class="footer-link">İbrahim Temur</a>. All rights reserved.'
 });
 
 /* --------------------------------------------------------------------------

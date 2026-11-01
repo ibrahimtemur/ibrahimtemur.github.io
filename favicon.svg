@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1c1c20"/>
+      <stop offset="100%" stop-color="#09090b"/>
+    </linearGradient>
+    <linearGradient id="borderGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.35)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0.08)"/>
+    </linearGradient>
+    <linearGradient id="textGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#d4d4d8"/>
+    </linearGradient>
+  </defs>
+  <!-- Squircle Base -->
+  <rect width="64" height="64" rx="14" fill="url(#bgGrad)"/>
+  <rect x="0.75" y="0.75" width="62.5" height="62.5" rx="13.25" stroke="url(#borderGrad)" stroke-width="1.5"/>
+  <!-- Status Live Dot -->
+  <circle cx="51" cy="13" r="2.5" fill="#10b981"/>
+  <!-- Code Monogram -->
+  <text x="32" y="39" text-anchor="middle" font-family="'JetBrains Mono', 'Fira Code', 'Space Grotesk', -apple-system, BlinkMacSystemFont, monospace, sans-serif" font-weight="800" font-size="20" letter-spacing="-0.8" fill="url(#textGrad)">&lt;IT/&gt;</text>
+</svg>

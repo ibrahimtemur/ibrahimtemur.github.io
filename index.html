@@ -15,8 +15,10 @@
   <meta property="og:description" content="Cross-Platform Mobile & Desktop (Flutter, SwiftUI, Jetpack Compose, PyQt6), Full-Stack Web (React, ASP.NET Core MVC, Node.js) & IoT/Embedded Systems." />
   <meta property="og:image" content="https://ibrahimtemur.github.io/avatar.jpg" />
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/jpeg" href="avatar.jpg" />
+  <!-- Favicon: Modern Code Monogram & Fallbacks -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="alternate icon" type="image/png" href="favicon.png" />
+  <link rel="apple-touch-icon" href="favicon.png" />
 
   <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -39,13 +41,8 @@
   <header class="navbar" id="navbar">
     <div class="container nav-inner">
       <a href="#top" class="brand" aria-label="İbrahim Temur Home">
-        <span class="brand-mark">
-          <img
-            src="avatar.jpg"
-            alt="İbrahim Temur"
-            class="brand-avatar-img"
-            onerror="this.onerror=null;this.src='https://github.com/ibrahimtemur.png';"
-          />
+        <span class="brand-mark brand-monogram" aria-hidden="true">
+          <span class="monogram-code">&lt;IT/&gt;</span>
         </span>
         <span class="brand-text">
           <span>İbrahim Temur</span>
@@ -725,8 +722,7 @@
        ==================================================================== -->
   <footer class="footer">
     <div class="container footer-inner">
-      <p data-i18n="footer.rights">© 2026 İbrahim Temur. Tüm hakları saklıdır.</p>
-      <p data-i18n="footer.built">GitHub Pages için modern HTML5, CSS3 ve Vanilla JS ile tasarlandı.</p>
+      <p data-i18n="footer.rights">© 2026 <a href="https://github.com/ibrahimtemur" target="_blank" rel="noopener noreferrer" class="footer-link">İbrahim Temur</a>. Tüm hakları saklıdır.</p>
     </div>
   </footer>
 
