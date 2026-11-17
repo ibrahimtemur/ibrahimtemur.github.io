@@ -244,6 +244,10 @@ function bootPortfolio() {
         ? el.parentElement
         : el;
       const top = getDocumentOffsetTop(anchorEl);
+      if (i === 3 && !featuredTrigger && el) {
+        const end = top + Math.max(0, el.offsetHeight - window.innerHeight * 0.7);
+        return { start: top, end };
+      }
       return { start: top, end: top };
     });
 

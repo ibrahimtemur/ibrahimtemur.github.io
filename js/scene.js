@@ -79,6 +79,148 @@ function drawRoundedRectPath(ctx, x, y, width, height, radius) {
   ctx.closePath();
 }
 
+function composeMacDesktopTexture(sourceImgOrCanvas, lang = "tr", maxAnisotropy = 4) {
+  const w = 1920;
+  const h = 1200;
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d");
+
+  // Petrol-teal macOS wallpaper gradient (strictly matching palette)
+  const wp = ctx.createLinearGradient(0, 0, w, h);
+  wp.addColorStop(0, "#0A151A");
+  wp.addColorStop(0.55, "#102329");
+  wp.addColorStop(1, "#163038");
+  ctx.fillStyle = wp;
+  ctx.fillRect(0, 0, w, h);
+
+  const glowA = ctx.createRadialGradient(420, 320, 40, 420, 320, 680);
+  glowA.addColorStop(0, "rgba(60, 207, 192, 0.20)");
+  glowA.addColorStop(1, "rgba(14, 27, 32, 0)");
+  ctx.fillStyle = glowA;
+  ctx.fillRect(0, 0, w, h);
+
+  const glowB = ctx.createRadialGradient(1520, 880, 30, 1520, 880, 620);
+  glowB.addColorStop(0, "rgba(242, 166, 90, 0.16)");
+  glowB.addColorStop(1, "rgba(14, 27, 32, 0)");
+  ctx.fillStyle = glowB;
+  ctx.fillRect(0, 0, w, h);
+
+  // macOS top menu bar
+  ctx.fillStyle = "rgba(10, 20, 24, 0.88)";
+  ctx.fillRect(0, 0, w, 40);
+  ctx.fillStyle = "rgba(242, 245, 244, 0.12)";
+  ctx.fillRect(0, 39, w, 1);
+
+  ctx.fillStyle = "#F2F5F4";
+  ctx.font = "700 18px Inter, -apple-system, sans-serif";
+  ctx.textBaseline = "middle";
+  ctx.fillText("Mac Remote", 62, 21);
+
+  ctx.fillStyle = "#B8C7C9";
+  ctx.font = "500 16px Inter, -apple-system, sans-serif";
+  const menus =
+    lang === "en"
+      ? ["File", "Edit", "View", "Window", "Help"]
+      : ["Dosya", "Düzen", "Görünüm", "Pencere", "Yardım"];
+  menus.forEach((label, idx) => {
+    ctx.fillText(label, 215 + idx * 92, 21);
+  });
+
+  // Left subtle macOS workspace window behind the active server panel
+  ctx.save();
+  ctx.fillStyle = "rgba(16, 32, 38, 0.86)";
+  ctx.strokeStyle = "rgba(242, 245, 244, 0.12)";
+  ctx.lineWidth = 2;
+  drawRoundedRectPath(ctx, 108, 118, 840, 910, 20);
+  ctx.fill();
+  ctx.stroke();
+
+  // Window title bar & traffic lights
+  ctx.fillStyle = "rgba(22, 45, 51, 0.9)";
+  drawRoundedRectPath(ctx, 108, 118, 840, 52, 20);
+  ctx.fill();
+  [0xf2a65a, 0x7e9598, 0x3ccfc0].forEach((hex, i) => {
+    ctx.fillStyle = `#${hex.toString(16).padStart(6, "0")}`;
+    ctx.beginPath();
+    ctx.arc(146 + i * 24, 144, 7, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // Subtle architectural grid lines inside left workspace window
+  ctx.strokeStyle = "rgba(60, 207, 192, 0.10)";
+  ctx.lineWidth = 1.5;
+  for (let gx = 160; gx < 910; gx += 72) {
+    ctx.beginPath();
+    ctx.moveTo(gx, 200);
+    ctx.lineTo(gx, 980);
+    ctx.stroke();
+  }
+  for (let gy = 220; gy < 990; gy += 72) {
+    ctx.beginPath();
+    ctx.moveTo(140, gy);
+    ctx.lineTo(910, gy);
+    ctx.stroke();
+  }
+  ctx.strokeStyle = "rgba(60, 207, 192, 0.34)";
+  ctx.lineWidth = 3;
+  drawRoundedRectPath(ctx, 220, 320, 616, 420, 18);
+  ctx.stroke();
+  ctx.restore();
+
+  // Right-center foreground window: real mac_server_tr/en.png at exact 740:1304 ratio
+  const winW = 556;
+  const winH = 980;
+  const winX = 1110;
+  const winY = 92;
+
+  ctx.save();
+  ctx.shadowColor = "rgba(0, 0, 0, 0.55)";
+  ctx.shadowBlur = 46;
+  ctx.shadowOffsetY = 20;
+  ctx.fillStyle = "#0E1B20";
+  drawRoundedRectPath(ctx, winX, winY, winW, winH, 24);
+  ctx.fill();
+  ctx.restore();
+
+  ctx.save();
+  drawRoundedRectPath(ctx, winX, winY, winW, winH, 24);
+  ctx.clip();
+  if (sourceImgOrCanvas) {
+    ctx.drawImage(sourceImgOrCanvas, winX, winY, winW, winH);
+  }
+  ctx.restore();
+
+  ctx.strokeStyle = "rgba(60, 207, 192, 0.35)";
+  ctx.lineWidth = 2;
+  drawRoundedRectPath(ctx, winX, winY, winW, winH, 24);
+  ctx.stroke();
+
+  // Bottom macOS Dock pill
+  ctx.fillStyle = "rgba(19, 39, 44, 0.85)";
+  ctx.strokeStyle = "rgba(242, 245, 244, 0.16)";
+  ctx.lineWidth = 1.5;
+  drawRoundedRectPath(ctx, 720, 1124, 480, 56, 22);
+  ctx.fill();
+  ctx.stroke();
+
+  const dockColors = ["#3CCFC0", "#1B353C", "#F2A65A", "#23444D", "#3CCFC0", "#1B353C", "#F2A65A"];
+  dockColors.forEach((col, i) => {
+    ctx.fillStyle = col;
+    drawRoundedRectPath(ctx, 766 + i * 58, 1134, 38, 38, 10);
+    ctx.fill();
+  });
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = Math.min(8, maxAnisotropy);
+  tex.minFilter = THREE.LinearMipmapLinearFilter;
+  tex.magFilter = THREE.LinearFilter;
+  tex.needsUpdate = true;
+  return tex;
+}
+
 function createDevicePlaceholderTexture(kind, lang = "tr") {
   const canvas = document.createElement("canvas");
 
@@ -189,10 +331,7 @@ function createDevicePlaceholderTexture(kind, lang = "tr") {
     drawRoundedRectPath(ctx, 96, 1095, 548, 72, 16);
     ctx.fill();
 
-    const tex = new THREE.CanvasTexture(canvas);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.needsUpdate = true;
-    return tex;
+    return composeMacDesktopTexture(canvas, lang);
   }
 
   // Mobile placeholder (660 x 1434 -> exact 1320:2868 ratio)
@@ -525,7 +664,11 @@ function createHeroMonolith(initialPalette) {
       uniforms.uPointer.value.set(nx, ny);
       uniforms.uHover.value = hover;
     },
-    update(time, dt, pointerTarget, viewportWidth, viewportHeight) {
+    update(time, dt, pointerTarget, viewportWidth, viewportHeight, scrollT = 0) {
+      const heroVis = THREE.MathUtils.smoothstep(0.15 - scrollT, 0.0, 0.06);
+      group.visible = heroVis > 0.005;
+      if (!group.visible) return;
+
       uniforms.uTime.value = time;
 
       // Responsive layout: scale down and center cleanly on mobile (< 768px)
@@ -547,6 +690,12 @@ function createHeroMonolith(initialPalette) {
       const tiltY = isMobile ? Math.sin(time * 0.4) * 0.06 : pointerTarget.x * 0.18;
       group.rotation.x = THREE.MathUtils.lerp(group.rotation.x, tiltX, Math.min(1, dt * 5));
       group.rotation.y = THREE.MathUtils.lerp(group.rotation.y, tiltY, Math.min(1, dt * 5));
+
+      coreMat.opacity = 0.22 * heroVis;
+      ringMatInner.opacity = 0.45 * heroVis;
+      ringMatPrimary.opacity = 0.65 * heroVis;
+      ringMatSecondary.opacity = 0.52 * heroVis;
+      outerLoopMat.opacity = 0.48 * heroVis;
 
       // Gentle float & precision orbital drift
       coreMesh.position.y = Math.sin(time * 0.9) * 0.035;
@@ -620,7 +769,9 @@ function createPrecisionDeviceSlab({
     metalness: 0.82,
     roughness: 0.26,
     clearcoat: 0.45,
-    clearcoatRoughness: 0.22
+    clearcoatRoughness: 0.22,
+    transparent: true,
+    opacity: 1.0
   });
   const bodyMesh = new THREE.Mesh(bodyGeo, bodyMat);
   slabGroup.add(bodyMesh);
@@ -635,7 +786,9 @@ function createPrecisionDeviceSlab({
   const bezelMat = new THREE.MeshStandardMaterial({
     color: new THREE.Color("#0A1317"),
     metalness: 0.2,
-    roughness: 0.35
+    roughness: 0.35,
+    transparent: true,
+    opacity: 1.0
   });
   const bezelMesh = new THREE.Mesh(bezelGeo, bezelMat);
   bezelMesh.position.z = bodyDepth * 0.5 + 0.016;
@@ -658,7 +811,8 @@ function createPrecisionDeviceSlab({
   const rimLoop = new THREE.LineLoop(rimGeo, rimMat);
   slabGroup.add(rimLoop);
 
-  // Subtle device detail (top earpiece pill on phone or subtle header bar on server)
+  const detailMats = [];
+  // Subtle device detail (top earpiece pill on phone or centered webcam dot on MacBook bezel)
   if (!isIcon && !isServer) {
     const pillGeo = new THREE.PlaneGeometry(0.26, 0.036);
     const pillMat = new THREE.MeshBasicMaterial({
@@ -666,23 +820,20 @@ function createPrecisionDeviceSlab({
       transparent: true,
       opacity: 0.85
     });
+    detailMats.push({ mat: pillMat, baseOpacity: 0.85 });
     const pill = new THREE.Mesh(pillGeo, pillMat);
     pill.position.set(0, bodyH * 0.5 - bezelPadY * 0.42, bodyDepth * 0.5 + 0.021);
     slabGroup.add(pill);
   } else if (isServer) {
-    const dotColors = [0xf2a65a, 0x7e9598, 0x3ccfc0];
-    dotColors.forEach((hex, idx) => {
-      const dot = new THREE.Mesh(
-        new THREE.CircleGeometry(0.024, 16),
-        new THREE.MeshBasicMaterial({ color: hex, transparent: true, opacity: 0.8 })
-      );
-      dot.position.set(
-        -screenWidth * 0.5 + 0.1 + idx * 0.075,
-        bodyH * 0.5 - bezelPadY * 0.5,
-        bodyDepth * 0.5 + 0.021
-      );
-      slabGroup.add(dot);
+    const camMat = new THREE.MeshBasicMaterial({
+      color: 0x1c3138,
+      transparent: true,
+      opacity: 0.9
     });
+    detailMats.push({ mat: camMat, baseOpacity: 0.9 });
+    const camDot = new THREE.Mesh(new THREE.CircleGeometry(0.022, 16), camMat);
+    camDot.position.set(0, bodyH * 0.5 - bezelPadY * 0.48, bodyDepth * 0.5 + 0.021);
+    slabGroup.add(camDot);
   }
 
   // Active Screen Plane with Anti-Aliased World-Proportional Rounded SDF Shader
@@ -695,7 +846,8 @@ function createPrecisionDeviceSlab({
     uCornerRadius: { value: screenCornerRadius },
     uPrimaryColor: { value: new THREE.Color(initialPalette.lightPrimary) },
     uSecondaryColor: { value: new THREE.Color(initialPalette.lightSecondary) },
-    uTime: { value: 0.0 }
+    uTime: { value: 0.0 },
+    uOpacity: { value: 1.0 }
   };
 
   const screenGeo = new THREE.PlaneGeometry(screenWidth, screenHeight, 1, 1);
@@ -726,6 +878,7 @@ function createPrecisionDeviceSlab({
       uniform vec3 uPrimaryColor;
       uniform vec3 uSecondaryColor;
       uniform float uTime;
+      uniform float uOpacity;
 
       varying vec2 vUv;
       varying vec3 vViewNormal;
@@ -761,7 +914,7 @@ function createPrecisionDeviceSlab({
         screenCol += vec3(0.035) * sheenBand * clamp(uFocus, 0.25, 1.0);
         screenCol += accentMix * (fresnel * 0.16 * clamp(uFocus, 0.3, 1.0));
 
-        gl_FragColor = vec4(screenCol, mask);
+        gl_FragColor = vec4(screenCol, mask * uOpacity);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
       }
@@ -778,8 +931,19 @@ function createPrecisionDeviceSlab({
   return {
     group: slabGroup,
     bodyMat,
+    bezelMat,
     rimMat,
     uniforms: screenUniforms,
+    setOpacity(op) {
+      const a = Math.max(0, Math.min(1, op));
+      screenUniforms.uOpacity.value = a;
+      bodyMat.opacity = a;
+      bezelMat.opacity = a;
+      rimMat.opacity = 0.45 * a;
+      detailMats.forEach((d) => {
+        d.mat.opacity = d.baseOpacity * a;
+      });
+    },
     setTexture(nextTex, instant = false) {
       if (!nextTex || nextTex === currentTex) return;
       if (instant) {
@@ -1088,19 +1252,51 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
   });
   group.add(mobileSlab.group);
 
-  // 2. macOS PyQt6 Server Slab (740 : 1304 -> exact 2.27 x 4.0 units)
+  // 2. macOS PyQt6 Server inside Landscape 16:10 MacBook Pro Display (1920 : 1200)
   const serverSlab = createPrecisionDeviceSlab({
-    screenWidth: 2.27,
-    screenHeight: 4.0,
-    bezelPadX: 0.09,
-    bezelPadY: 0.14,
+    screenWidth: 3.84,
+    screenHeight: 2.4,
+    bezelPadX: 0.11,
+    bezelPadY: 0.13,
     bodyDepth: 0.075,
-    cornerRadius: 0.16,
-    screenCornerRadius: 0.1,
+    cornerRadius: 0.12,
+    screenCornerRadius: 0.05,
     initialTexture: placeholders.server[activeLang],
     initialPalette,
     isServer: true
   });
+
+  // Attach MacBook Pro anodized keyboard deck & hinge bar beneath the landscape display
+  const macDeck = new THREE.Mesh(
+    new THREE.BoxGeometry(4.14, 0.065, 1.44),
+    serverSlab.bodyMat
+  );
+  macDeck.position.set(0, -1.34, 0.64);
+  serverSlab.group.add(macDeck);
+
+  const macHinge = new THREE.Mesh(
+    new THREE.BoxGeometry(3.2, 0.055, 0.1),
+    serverSlab.bezelMat
+  );
+  macHinge.position.set(0, -1.31, -0.02);
+  serverSlab.group.add(macHinge);
+
+  const macKeyboard = new THREE.Mesh(
+    new THREE.PlaneGeometry(3.52, 0.72),
+    serverSlab.bezelMat
+  );
+  macKeyboard.rotation.x = -Math.PI * 0.5;
+  macKeyboard.position.set(0, -1.306, 0.34);
+  serverSlab.group.add(macKeyboard);
+
+  const macTrackpad = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.16, 0.44),
+    serverSlab.bezelMat
+  );
+  macTrackpad.rotation.x = -Math.PI * 0.5;
+  macTrackpad.position.set(0, -1.306, 1.02);
+  serverSlab.group.add(macTrackpad);
+
   group.add(serverSlab.group);
 
   // 3. App Icon Floating Slab (512 x 512 -> 1:1 ratio)
@@ -1126,7 +1322,7 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
   const basePts = [];
   for (let i = 0; i < 96; i++) {
     const a = (i / 96) * Math.PI * 2;
-    basePts.push(new THREE.Vector3(Math.cos(a) * 2.75, -2.25, Math.sin(a) * 1.75));
+    basePts.push(new THREE.Vector3(Math.cos(a) * 3.15, -2.25, Math.sin(a) * 1.85));
   }
   const baseRingGeo = new THREE.BufferGeometry().setFromPoints(basePts);
   const baseRingMat = new THREE.LineBasicMaterial({
@@ -1136,6 +1332,8 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
   });
   const baseRing = new THREE.LineLoop(baseRingGeo, baseRingMat);
   group.add(baseRing);
+
+  const compositeMacCache = new Map();
 
   function syncTexturesForState(instant = false) {
     const langKey = activeLang === "en" ? "en" : "tr";
@@ -1154,7 +1352,17 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
       mobileSlab.setTexture(tex, instant);
     });
     loadCachedTexture(serverUrl, placeholders.server[langKey], (tex) => {
-      serverSlab.setTexture(tex, instant);
+      if (tex === placeholders.server[langKey]) {
+        serverSlab.setTexture(tex, instant);
+        return;
+      }
+      const cacheKey = `${serverUrl}::${langKey}`;
+      let composite = compositeMacCache.get(cacheKey);
+      if (!composite && tex?.image) {
+        composite = composeMacDesktopTexture(tex.image, langKey, maxAnisotropy);
+        compositeMacCache.set(cacheKey, composite);
+      }
+      serverSlab.setTexture(composite || placeholders.server[langKey], instant);
     });
     loadCachedTexture(MAC_LOGO_URL, placeholders.icon, (tex) => {
       iconSlab.setTexture(tex, true);
@@ -1176,44 +1384,44 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
   syncTexturesForState(true);
 
   const STEP_POSES = [
-    // Step 0: Discovery & Connection -> tr1/en1 foreground + active light bridge
+    // Step 0: Discovery & Connection -> tr1/en1 foreground + active light bridge + Landscape MacBook
     {
-      mobilePos: new THREE.Vector3(-1.52, 0.0, 0.86),
+      mobilePos: new THREE.Vector3(-2.02, -0.04, 0.72),
       mobileRot: new THREE.Euler(0.02, 0.22, 0.0),
-      mobileScale: 0.94,
+      mobileScale: 0.86,
       mobileFocus: 1.0,
-      serverPos: new THREE.Vector3(1.86, 0.06, -0.64),
-      serverRot: new THREE.Euler(-0.02, -0.26, 0.0),
-      serverScale: 0.86,
-      serverFocus: 0.78,
-      iconPos: new THREE.Vector3(0.14, 1.56, 0.65),
+      serverPos: new THREE.Vector3(1.52, 0.14, -0.42),
+      serverRot: new THREE.Euler(-0.02, -0.22, 0.0),
+      serverScale: 0.88,
+      serverFocus: 0.86,
+      iconPos: new THREE.Vector3(-0.32, 1.56, 0.45),
       bridgeIntensity: 1.0
     },
     // Step 1: Trackpad & Live Screen -> tr2/en2 glides to center stage
     {
-      mobilePos: new THREE.Vector3(-0.56, -0.02, 1.24),
-      mobileRot: new THREE.Euler(0.03, 0.05, 0.0),
-      mobileScale: 1.0,
+      mobilePos: new THREE.Vector3(-1.14, -0.02, 1.12),
+      mobileRot: new THREE.Euler(0.03, 0.06, 0.0),
+      mobileScale: 0.94,
       mobileFocus: 1.0,
-      serverPos: new THREE.Vector3(2.22, 0.1, -0.94),
-      serverRot: new THREE.Euler(-0.02, -0.34, 0.0),
-      serverScale: 0.8,
-      serverFocus: 0.68,
-      iconPos: new THREE.Vector3(0.95, 1.56, 0.45),
-      bridgeIntensity: 0.9
+      serverPos: new THREE.Vector3(1.92, 0.16, -0.68),
+      serverRot: new THREE.Euler(-0.02, -0.28, 0.0),
+      serverScale: 0.82,
+      serverFocus: 0.76,
+      iconPos: new THREE.Vector3(0.45, 1.58, 0.35),
+      bridgeIntensity: 0.92
     },
-    // Step 2: macOS Server Control Panel -> mac_server_tr/en takes center foreground
+    // Step 2: macOS Server Control Panel -> Landscape MacBook steps forward
     {
-      mobilePos: new THREE.Vector3(-1.98, -0.06, -0.76),
-      mobileRot: new THREE.Euler(0.02, 0.3, 0.0),
-      mobileScale: 0.82,
-      mobileFocus: 0.7,
-      serverPos: new THREE.Vector3(1.04, 0.04, 1.16),
+      mobilePos: new THREE.Vector3(-2.36, -0.08, -0.58),
+      mobileRot: new THREE.Euler(0.02, 0.28, 0.0),
+      mobileScale: 0.76,
+      mobileFocus: 0.74,
+      serverPos: new THREE.Vector3(0.95, 0.12, 0.92),
       serverRot: new THREE.Euler(0.02, -0.08, 0.0),
-      serverScale: 1.0,
+      serverScale: 0.96,
       serverFocus: 1.0,
-      iconPos: new THREE.Vector3(-0.62, 1.54, 0.58),
-      bridgeIntensity: 0.95
+      iconPos: new THREE.Vector3(-0.92, 1.54, 0.42),
+      bridgeIntensity: 0.96
     }
   ];
 
@@ -1267,22 +1475,28 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
         outLookOffset.set(0.42, 0.02, 0.0);
       }
     },
-    update(time, dt, pointerTarget, viewportWidth) {
+    update(time, dt, pointerTarget, viewportWidth, scrollT = 0) {
+      const distT = Math.abs(scrollT - 0.5);
+      const vis = THREE.MathUtils.smoothstep(0.115 - distT, 0.0, 0.055);
+      group.visible = vis > 0.005;
+      if (!group.visible) return;
+
       const pose = STEP_POSES[activeStep];
       const lerpAlpha = Math.min(1, dt * 5.2);
 
-      // Responsive staging: fit neatly in right 68% on desktop, center cleanly on mobile/tablet (<821px)
+      // Responsive staging: fit neatly in right 68% on desktop, dead-center on mobile (<600px)
       const isStackedLayout = viewportWidth < 821;
-      const targetGroupScale =
-        viewportWidth < 600
-          ? 0.24
-          : isStackedLayout
-          ? 0.46
-          : viewportWidth < 1200
-          ? 0.72
-          : 0.88;
-      const targetGroupX = isStackedLayout ? -2.38 : 0.0;
-      const targetGroupY = viewportWidth < 600 ? -1.78 : isStackedLayout ? -1.45 : 0.0;
+      const isCompactMobile = viewportWidth < 600;
+      const targetGroupScale = isCompactMobile
+        ? 0.22
+        : isStackedLayout
+        ? 0.43
+        : viewportWidth < 1200
+        ? 0.68
+        : 0.84;
+      const targetGroupX = isCompactMobile ? -2.5 : isStackedLayout ? -2.38 : 0.0;
+      const targetGroupY = isCompactMobile ? -1.15 : isStackedLayout ? -1.45 : 0.0;
+      const xSpread = isCompactMobile ? 0.68 : 1.0;
 
       group.scale.setScalar(
         THREE.MathUtils.lerp(group.scale.x, targetGroupScale, lerpAlpha)
@@ -1297,6 +1511,11 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
         CAMERA_STATIONS[3].anchor[1] + targetGroupY,
         lerpAlpha
       );
+      group.position.z = THREE.MathUtils.lerp(
+        group.position.z,
+        CAMERA_STATIONS[3].anchor[2] - (1 - vis) * 3.5,
+        lerpAlpha
+      );
 
       // Smooth mobile slab choreography + gentle hover float
       const floatA = Math.sin(time * 1.1) * 0.045;
@@ -1304,7 +1523,7 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
 
       mobileSlab.group.position.x = THREE.MathUtils.lerp(
         mobileSlab.group.position.x,
-        pose.mobilePos.x + pointerTarget.x * 0.08,
+        pose.mobilePos.x * xSpread + pointerTarget.x * 0.08,
         lerpAlpha
       );
       mobileSlab.group.position.y = THREE.MathUtils.lerp(
@@ -1336,10 +1555,10 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
         lerpAlpha
       );
 
-      // Smooth server slab choreography
+      // Smooth landscape MacBook slab choreography
       serverSlab.group.position.x = THREE.MathUtils.lerp(
         serverSlab.group.position.x,
-        pose.serverPos.x + pointerTarget.x * 0.05,
+        pose.serverPos.x * xSpread + pointerTarget.x * 0.05,
         lerpAlpha
       );
       serverSlab.group.position.y = THREE.MathUtils.lerp(
@@ -1374,7 +1593,7 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
       // App Icon floating badge
       iconSlab.group.position.x = THREE.MathUtils.lerp(
         iconSlab.group.position.x,
-        pose.iconPos.x,
+        pose.iconPos.x * xSpread,
         lerpAlpha
       );
       iconSlab.group.position.y = THREE.MathUtils.lerp(
@@ -1390,27 +1609,32 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
       iconSlab.group.rotation.y = Math.sin(time * 0.8 + continuousProgress * 1.5) * 0.22;
       iconSlab.group.rotation.x = Math.cos(time * 0.7) * 0.06;
 
+      mobileSlab.setOpacity(vis);
+      serverSlab.setOpacity(vis);
+      iconSlab.setOpacity(vis);
+      baseRingMat.opacity = 0.42 * vis;
+
       mobileSlab.tick(time, dt);
       serverSlab.tick(time, dt);
       iconSlab.tick(time, dt);
 
-      // Bridge endpoints stay locked to the inner edges of mobile & server slabs
+      // Bridge endpoints stay locked to the inner edges of mobile & MacBook slabs
       tmpStart.set(
-        mobileSlab.group.position.x + 0.92 * mobileSlab.group.scale.x,
-        mobileSlab.group.position.y - 0.1,
+        mobileSlab.group.position.x + 0.9 * mobileSlab.group.scale.x,
+        mobileSlab.group.position.y - 0.06,
         mobileSlab.group.position.z + 0.04
       );
       tmpEnd.set(
-        serverSlab.group.position.x - 1.12 * serverSlab.group.scale.x,
-        serverSlab.group.position.y + 0.06,
-        serverSlab.group.position.z + 0.04
+        serverSlab.group.position.x - 1.92 * serverSlab.group.scale.x,
+        serverSlab.group.position.y - 0.04,
+        serverSlab.group.position.z + 0.05
       );
       lerpedBridgeIntensity = THREE.MathUtils.lerp(
         lerpedBridgeIntensity,
         pose.bridgeIntensity,
         lerpAlpha
       );
-      lightBridge.update(time, tmpStart, tmpEnd, lerpedBridgeIntensity);
+      lightBridge.update(time, tmpStart, tmpEnd, lerpedBridgeIntensity * vis);
 
       baseRing.rotation.y = time * 0.05;
     },
@@ -1588,7 +1812,7 @@ function createPlaceholderStationMarker(station, initialPalette) {
     isWarm: station.index % 2 !== 0,
     update(time, cameraZ = 0) {
       const dist = Math.abs(cameraZ - group.position.z);
-      const vis = THREE.MathUtils.smoothstep(22.0 - dist, 0.0, 12.0);
+      const vis = THREE.MathUtils.smoothstep(13.0 - dist, 0.0, 5.5);
       group.visible = vis > 0.01;
       if (!group.visible) return;
       ringMat.opacity = 0.34 * vis;
@@ -1932,10 +2156,10 @@ export function initPortfolioScene() {
 
     // Update Stations & Atmospheric Field
     heroMonolith.setPointer(pointerSmoothed.x, pointerSmoothed.y, Math.min(1, Math.hypot(pointerSmoothed.x, pointerSmoothed.y)));
-    heroMonolith.update(elapsed, dt, pointerSmoothed, viewportWidth, viewportHeight);
+    heroMonolith.update(elapsed, dt, pointerSmoothed, viewportWidth, viewportHeight, currentScrollT);
     heroMonolith.syncTheme(lerpedColors, currentThemeMix);
 
-    macRemoteStage.update(elapsed, dt, pointerSmoothed, viewportWidth);
+    macRemoteStage.update(elapsed, dt, pointerSmoothed, viewportWidth, currentScrollT);
     macRemoteStage.syncTheme(lerpedColors, currentThemeMix);
 
     placeholderStations.forEach((st) => {

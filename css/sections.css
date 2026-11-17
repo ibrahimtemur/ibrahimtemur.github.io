@@ -620,6 +620,12 @@
     display: block;
   }
 
+  /* When WebGL 3D is active, never show the 2D screenshot box or toggle over the 3D scene */
+  html:not(.webgl-fallback) .featured-stage-controls,
+  html:not(.webgl-fallback) .featured-stage-frame {
+    display: none !important;
+  }
+
   .featured-stage-frame img {
     width: auto;
     max-width: 100%;
@@ -664,13 +670,39 @@
   }
 
   .iot-fallback-schematic {
-    display: none;
+    display: block;
     width: 100%;
-    max-width: 480px;
+    max-width: 520px;
+    transition: transform var(--dur-base) var(--ease-out-expo);
   }
 
-  html.webgl-fallback .iot-fallback-schematic {
-    display: block;
+  .iot-pcb-window[data-iot-active-state="idle"] .iot-pcb-led {
+    fill: var(--text-muted);
+    opacity: 0.6;
+  }
+
+  .iot-pcb-window[data-iot-active-state="heating"] .iot-pcb-led {
+    fill: var(--accent-secondary);
+    opacity: 1;
+  }
+
+  .iot-pcb-window[data-iot-active-state="heating"] .iot-trace-relay {
+    stroke-width: 2.6;
+  }
+
+  .iot-pcb-window[data-iot-active-state="brewing"] .iot-pcb-led {
+    fill: var(--accent-primary);
+    opacity: 1;
+  }
+
+  .iot-pcb-window[data-iot-active-state="brewing"] .iot-trace-adc,
+  .iot-pcb-window[data-iot-active-state="brewing"] .iot-trace-relay {
+    stroke-width: 2.6;
+  }
+
+  .iot-pcb-window[data-iot-active-state="done"] .iot-pcb-led {
+    fill: var(--accent-primary);
+    opacity: 0.9;
   }
 
   .iot-machine-col {

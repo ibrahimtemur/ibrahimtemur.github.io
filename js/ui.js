@@ -489,6 +489,11 @@ export function setIotState(stateKey) {
     node.setAttribute("aria-pressed", String(active));
   });
 
+  const pcbWin = document.getElementById("iotPcbWindow");
+  if (pcbWin) {
+    pcbWin.setAttribute("data-iot-active-state", currentIotState);
+  }
+
   if (typeof uiOptions.onIotStateChange === "function") {
     uiOptions.onIotStateChange(currentIotState);
   }
