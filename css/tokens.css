@@ -1,0 +1,155 @@
+/* ==========================================================================
+   DESIGN TOKENS — İbrahim Temur Portfolio
+   Theme Palette: Deep Abyssal Teal-Slate (Dark) & Warm Limestone (Light)
+   Typography: Inter Variable Only
+   ========================================================================== */
+
+:root,
+[data-theme="dark"] {
+  /* Surface Hierarchy */
+  --bg-void: #0E1B20;
+  --bg-primary: #102026;
+  --bg-elevated: #13272C;
+  --bg-panel: #162D33;
+  --bg-subtle: #1B353C;
+
+  /* Text Hierarchy */
+  --text-primary: #F2F5F4;
+  --text-secondary: #B8C7C9;
+  --text-muted: #7E9598;
+
+  /* Accent System — Teal & Warm Amber */
+  --accent-primary: #3CCFC0;
+  --accent-primary-hover: #56DDD0;
+  --accent-secondary: #F2A65A;
+  --accent-secondary-hover: #F5B776;
+  --accent-gradient: linear-gradient(135deg, #3CCFC0 0%, #F2A65A 100%);
+
+  /* Hairlines & Borders */
+  --border-subtle: rgba(242, 245, 244, 0.12);
+  --border-strong: rgba(60, 207, 192, 0.36);
+
+  /* 3D WebGL Scene Sync Tokens */
+  --scene-bg: #0E1B20;
+  --scene-fog: #102026;
+  --scene-ambient: #13272C;
+  --scene-light-primary: #3CCFC0;
+  --scene-light-secondary: #F2A65A;
+  --scene-wire: #23444D;
+
+  /* Derived Surface & Elevation Tokens */
+  --bg-panel-solid: #162D33;
+  --bg-panel-alpha: rgba(22, 45, 51, 0.94);
+  --bg-scrim: rgba(14, 27, 32, 0.72);
+  --accent-primary-soft: rgba(60, 207, 192, 0.14);
+  --accent-secondary-soft: rgba(242, 166, 90, 0.14);
+  --shadow-island: 0 18px 44px -16px rgba(10, 20, 24, 0.68);
+  --shadow-drawer: -16px 0 48px -14px rgba(10, 20, 24, 0.64);
+  --shadow-frame: 0 24px 56px -22px rgba(10, 20, 24, 0.72);
+}
+
+[data-theme="light"] {
+  /* Surface Hierarchy */
+  --bg-void: #F5F1E8;
+  --bg-primary: #ECE6DA;
+  --bg-elevated: #FAF7F0;
+  --bg-panel: #FFFFFF;
+  --bg-subtle: #E4DDD0;
+
+  /* Text Hierarchy */
+  --text-primary: #0E1B20;
+  --text-secondary: #283E45;
+  --text-muted: #566E74;
+
+  /* Accent System — Deep Teal & Burnt Amber */
+  --accent-primary: #0E8F86;
+  --accent-primary-hover: #0A756E;
+  --accent-secondary: #C9731E;
+  --accent-secondary-hover: #AE5F14;
+  --accent-gradient: linear-gradient(135deg, #0E8F86 0%, #C9731E 100%);
+
+  /* Hairlines & Borders */
+  --border-subtle: rgba(14, 27, 32, 0.12);
+  --border-strong: rgba(14, 143, 134, 0.34);
+
+  /* 3D WebGL Scene Sync Tokens */
+  --scene-bg: #F5F1E8;
+  --scene-fog: #ECE6DA;
+  --scene-ambient: #DFD8C8;
+  --scene-light-primary: #0E8F86;
+  --scene-light-secondary: #C9731E;
+  --scene-wire: #C7BFA9;
+
+  /* Derived Surface & Elevation Tokens */
+  --bg-panel-solid: #FFFFFF;
+  --bg-panel-alpha: rgba(255, 255, 255, 0.95);
+  --bg-scrim: rgba(14, 27, 32, 0.34);
+  --accent-primary-soft: rgba(14, 143, 134, 0.11);
+  --accent-secondary-soft: rgba(201, 115, 30, 0.11);
+  --shadow-island: 0 18px 44px -16px rgba(14, 27, 32, 0.18);
+  --shadow-drawer: -16px 0 48px -14px rgba(14, 27, 32, 0.18);
+  --shadow-frame: 0 24px 56px -22px rgba(14, 27, 32, 0.18);
+}
+
+:root {
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  --text-hero-display: clamp(2.85rem, 11.2vw, 10rem);
+  --text-display: clamp(2rem, 4.4vw, 4rem);
+  --text-title: clamp(1.45rem, 2.6vw, 2.25rem);
+  --text-heading: clamp(1.125rem, 1.5vw, 1.375rem);
+  --text-body-lg: clamp(1rem, 1.2vw, 1.15rem);
+  --text-body: clamp(0.92rem, 1vw, 1rem);
+  --text-sm: 0.85rem;
+  --text-xs: 0.75rem;
+
+  /* Spacing & Layout */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  --container-max: 1280px;
+  --gutter: clamp(1.25rem, 4vw, 3.5rem);
+  --rail-safe-left: clamp(4.75rem, 7vw, 6.75rem);
+  --section-pad-y: clamp(4.5rem, 10vh, 7.5rem);
+
+  /* Radii */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-pill: 9999px;
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 180ms;
+  --dur-base: 360ms;
+  --dur-slow: 720ms;
+
+  /* Z-Index Scale */
+  --z-backdrop: -1;
+  --z-hero-back: 0;
+  --z-canvas: 1;
+  --z-scenes: 3;
+  --z-rail: 20;
+  --z-brand: 25;
+  --z-island: 30;
+  --z-drawer-backdrop: 40;
+  --z-drawer: 45;
+  --z-curtain: 50;
+  --z-palette: 60;
+  --z-toast: 70;
+  --z-cursor: 80;
+  --z-preloader: 90;
+}
