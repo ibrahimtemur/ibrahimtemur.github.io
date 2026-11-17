@@ -19,8 +19,11 @@
     display: inline-flex;
     align-items: center;
     gap: var(--space-3);
-    padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+    padding: 0.32rem 0.8rem 0.32rem 0.32rem;
     border-radius: var(--radius-pill);
+    background-color: var(--bg-panel-alpha);
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-island);
     transition:
       opacity var(--dur-fast) var(--ease-out-expo),
       transform var(--dur-base) var(--ease-out-expo);
@@ -131,6 +134,7 @@
   }
 
   .rail-step {
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
@@ -160,24 +164,30 @@
   }
 
   .rail-step-label {
-    max-width: 0;
+    position: absolute;
+    left: calc(100% + 0.5rem);
+    top: 50%;
+    transform: translateY(-50%) translateX(-4px);
     opacity: 0;
-    overflow: hidden;
     white-space: nowrap;
     font-weight: 500;
-    font-size: 0.74rem;
-    color: var(--text-secondary);
+    font-size: 0.72rem;
+    color: var(--text-primary);
+    background-color: var(--bg-panel-solid);
+    border: 1px solid var(--border-subtle);
+    padding: 0.22rem 0.55rem;
+    border-radius: var(--radius-xs);
+    box-shadow: var(--shadow-island);
+    pointer-events: none;
+    z-index: 5;
     transition:
-      max-width var(--dur-base) var(--ease-out-expo),
       opacity var(--dur-fast) var(--ease-out-expo),
-      margin-left var(--dur-fast);
+      transform var(--dur-fast) var(--ease-out-expo);
   }
 
-  .rail-step:hover .rail-step-label,
-  .rail-step:focus-visible .rail-step-label {
-    max-width: 130px;
+  .rail-step:hover .rail-step-label {
     opacity: 1;
-    margin-left: 0.25rem;
+    transform: translateY(-50%) translateX(0);
   }
 
   .rail-step:hover,

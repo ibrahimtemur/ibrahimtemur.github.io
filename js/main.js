@@ -28,21 +28,19 @@ function getDocumentOffsetTop(el) {
 }
 
 function bootPortfolio() {
-  const prefersReducedMotion =
-    typeof window !== "undefined" &&
-    window.matchMedia &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const urlParams = new URLSearchParams(window.location.search);
+  const forceReducedMotion = urlParams.get("reduced") === "1";
 
   const hasGsap = Boolean(window.gsap);
   const hasScrollTrigger = Boolean(window.gsap && window.ScrollTrigger);
   const hasLenis = Boolean(window.Lenis);
 
-  // 1. Initialize 3D WebGL Scene (or graceful fallback on reduced-motion / no WebGL)
+  // 1. Initialize 3D WebGL Scene (or graceful fallback via ?fallback=1 / no WebGL)
   const sceneController = initPortfolioScene();
 
   // 2. Setup Lenis Smooth Scroll (Desktop & Touch, prevented inside scrollable overlays)
   let lenis = null;
-  if (!prefersReducedMotion && hasLenis) {
+  if (!forceReducedMotion && hasLenis) {
     lenis = new window.Lenis({
       duration: 1.15,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -87,12 +85,12 @@ function bootPortfolio() {
       (targetEl.id === "scene-featured" || targetEl.id === "featured") &&
       featuredTrigger
     ) {
-      if (lenis && !prefersReducedMotion) {
+      if (lenis && !forceReducedMotion) {
         lenis.scrollTo(featuredTrigger.start, { duration: 1.05 });
       } else {
         window.scrollTo({
           top: featuredTrigger.start,
-          behavior: prefersReducedMotion ? "auto" : "smooth"
+          behavior: forceReducedMotion ? "auto" : "smooth"
         });
       }
       return;
@@ -102,11 +100,11 @@ function bootPortfolio() {
       : null;
     const dest = spacer || targetEl;
 
-    if (lenis && !prefersReducedMotion) {
+    if (lenis && !forceReducedMotion) {
       lenis.scrollTo(dest, { duration: 1.05 });
     } else {
       dest.scrollIntoView({
-        behavior: prefersReducedMotion ? "auto" : "smooth",
+        behavior: forceReducedMotion ? "auto" : "smooth",
         block: "start"
       });
     }
@@ -157,7 +155,7 @@ function bootPortfolio() {
   };
   window.addEventListener("keydown", onPreloaderEsc);
 
-  if (prefersReducedMotion || !sceneController.isWebGL) {
+  if (forceReducedMotion || !sceneController.isWebGL) {
     sceneController.setIntroProgress(1);
     dismissPreloader();
   } else {
@@ -189,10 +187,10 @@ function bootPortfolio() {
   const featuredSection =
     document.getElementById("scene-featured") || document.getElementById("featured");
 
-  if (!prefersReducedMotion && hasScrollTrigger && featuredSection) {
+  if (!forceReducedMotion && hasScrollTrigger && featuredSection) {
     const mm = window.gsap.matchMedia();
 
-    mm.add("(min-width: 961px)", () => {
+    mm.add("(min-width: 821px)", () => {
       featuredTrigger = window.ScrollTrigger.create({
         trigger: featuredSection,
         start: "top top",

@@ -95,7 +95,7 @@
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
-  --text-hero-display: clamp(2.85rem, 11.2vw, 10rem);
+  --text-hero-display: clamp(2.65rem, 9.6vw, 8.75rem);
   --text-display: clamp(2rem, 4.4vw, 4rem);
   --text-title: clamp(1.45rem, 2.6vw, 2.25rem);
   --text-heading: clamp(1.125rem, 1.5vw, 1.375rem);
@@ -120,7 +120,7 @@
 
   --container-max: 1280px;
   --gutter: clamp(1.25rem, 4vw, 3.5rem);
-  --rail-safe-left: clamp(4.75rem, 7vw, 6.75rem);
+  --rail-safe-left: clamp(5.5rem, 8.5vw, 7.75rem);
   --section-pad-y: clamp(4.5rem, 10vh, 7.5rem);
 
   /* Radii */

@@ -1429,7 +1429,7 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
       }
     },
     getCameraStepOffset(outCamOffset, outLookOffset, viewportWidth = 1440) {
-      if (viewportWidth < 961) {
+      if (viewportWidth < 821) {
         outCamOffset.set(0, 0, 0);
         outLookOffset.set(0, 0, 0);
         return;
@@ -1450,15 +1450,18 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
       const pose = STEP_POSES[activeStep];
       const lerpAlpha = Math.min(1, dt * 5.2);
 
-      // Responsive staging: fit neatly in right 66% on desktop, recede subtly on mobile (<961px)
-      const isStackedLayout = viewportWidth < 961;
-      const targetGroupScale = isStackedLayout
-        ? 0.56
-        : viewportWidth < 1200
-        ? 0.78
-        : 0.92;
-      const targetGroupX = isStackedLayout ? -1.4 : 0.0;
-      const targetGroupY = isStackedLayout ? -0.95 : 0.0;
+      // Responsive staging: fit neatly in right 66% on desktop, center cleanly on mobile/tablet (<821px)
+      const isStackedLayout = viewportWidth < 821;
+      const targetGroupScale =
+        viewportWidth < 600
+          ? 0.35
+          : isStackedLayout
+          ? 0.54
+          : viewportWidth < 1200
+          ? 0.78
+          : 0.92;
+      const targetGroupX = isStackedLayout ? -1.9 : 0.0;
+      const targetGroupY = isStackedLayout ? -1.1 : 0.0;
 
       group.scale.setScalar(
         THREE.MathUtils.lerp(group.scale.x, targetGroupScale, lerpAlpha)
@@ -1807,12 +1810,15 @@ function createFallbackController() {
 
 export function initPortfolioScene() {
   const canvas = document.getElementById("webgl-canvas");
-  const prefersReducedMotion =
-    typeof window !== "undefined" &&
-    window.matchMedia &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const urlParams =
+    typeof window !== "undefined"
+      ? new URLSearchParams(window.location.search)
+      : null;
+  const forceFallback = urlParams?.get("fallback") === "1";
+  const forceReducedMotion = urlParams?.get("reduced") === "1";
+  const motionScale = forceReducedMotion ? 0.35 : 1.0;
 
-  if (!canvas || prefersReducedMotion) {
+  if (!canvas || forceFallback) {
     return createFallbackController();
   }
 
@@ -1825,7 +1831,11 @@ export function initPortfolioScene() {
       powerPreference: "high-performance"
     });
   } catch (_) {
-    return createFallbackController();
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+    } catch (__) {
+      return createFallbackController();
+    }
   }
 
   if (!renderer || !renderer.getContext()) {
@@ -2038,7 +2048,7 @@ export function initPortfolioScene() {
 
     const dt = Math.min(0.05, Math.max(0.001, (now - lastNow) / 1000));
     lastNow = now;
-    elapsed += dt;
+    elapsed += dt * motionScale;
 
     // Smooth pointer & scroll interpolation
     const ptrAlpha = Math.min(1, dt * 5.0);
