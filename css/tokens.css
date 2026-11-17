@@ -95,7 +95,7 @@
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
-  --text-hero-display: clamp(2.65rem, 9.6vw, 8.75rem);
+  --text-hero-display: clamp(2.4rem, 8.2vw, 7.8rem);
   --text-display: clamp(2rem, 4.4vw, 4rem);
   --text-title: clamp(1.45rem, 2.6vw, 2.25rem);
   --text-heading: clamp(1.125rem, 1.5vw, 1.375rem);

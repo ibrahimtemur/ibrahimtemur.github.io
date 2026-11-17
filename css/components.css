@@ -19,7 +19,7 @@
     display: inline-flex;
     align-items: center;
     gap: var(--space-3);
-    padding: 0.32rem 0.8rem 0.32rem 0.32rem;
+    padding: 0.42rem 0.9rem;
     border-radius: var(--radius-pill);
     background-color: var(--bg-panel-alpha);
     border: 1px solid var(--border-subtle);

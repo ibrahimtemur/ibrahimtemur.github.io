@@ -79,44 +79,6 @@ function drawRoundedRectPath(ctx, x, y, width, height, radius) {
   ctx.closePath();
 }
 
-function createAvatarFallbackTexture() {
-  const canvas = document.createElement("canvas");
-  canvas.width = 512;
-  canvas.height = 512;
-  const ctx = canvas.getContext("2d");
-
-  const grad = ctx.createLinearGradient(0, 0, 512, 512);
-  grad.addColorStop(0, "#102026");
-  grad.addColorStop(0.55, "#162D33");
-  grad.addColorStop(1, "#1B353C");
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, 512, 512);
-
-  const glow = ctx.createRadialGradient(256, 220, 20, 256, 256, 230);
-  glow.addColorStop(0, "rgba(60, 207, 192, 0.28)");
-  glow.addColorStop(0.65, "rgba(242, 166, 90, 0.14)");
-  glow.addColorStop(1, "rgba(14, 27, 32, 0)");
-  ctx.fillStyle = glow;
-  ctx.fillRect(0, 0, 512, 512);
-
-  ctx.strokeStyle = "rgba(60, 207, 192, 0.45)";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.arc(256, 256, 128, 0, Math.PI * 2);
-  ctx.stroke();
-
-  ctx.fillStyle = "#F2F5F4";
-  ctx.font = "700 72px Inter, -apple-system, sans-serif";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText("İT", 256, 258);
-
-  const tex = new THREE.CanvasTexture(canvas);
-  tex.colorSpace = THREE.SRGBColorSpace;
-  tex.needsUpdate = true;
-  return tex;
-}
-
 function createDevicePlaceholderTexture(kind, lang = "tr") {
   const canvas = document.createElement("canvas");
 
@@ -373,199 +335,48 @@ function createRoundedBorderPoints(width, height, radius, zOffset = 0, segmentsP
 }
 
 /* --------------------------------------------------------------------------
-   4. SCENE 01 — HERO 3D PORTRAIT MONOLITH (Custom GLSL Shader + Torus Rings)
+   4. SCENE 01 — HERO 3D ORBITAL GYROSCOPE (Wireframe Core + Torus Rings)
    -------------------------------------------------------------------------- */
-function createHeroMonolith(initialPalette, maxAnisotropy) {
+function createHeroMonolith(initialPalette) {
   const group = new THREE.Group();
   group.name = "HeroMonolith";
 
-  const fallbackTex = createAvatarFallbackTexture();
   const uniforms = {
-    uMap: { value: fallbackTex },
     uTime: { value: 0 },
     uPointer: { value: new THREE.Vector2(0, 0) },
     uHover: { value: 0 },
     uPrimaryColor: { value: new THREE.Color(initialPalette.lightPrimary) },
     uSecondaryColor: { value: new THREE.Color(initialPalette.lightSecondary) },
     uBgColor: { value: new THREE.Color(initialPalette.bg) },
-    uThemeMix: { value: initialPalette.isLight ? 1.0 : 0.0 },
-    uOpacity: { value: 1.0 }
+    uThemeMix: { value: initialPalette.isLight ? 1.0 : 0.0 }
   };
 
-  const textureLoader = new THREE.TextureLoader();
-  textureLoader.load(
-    "avatar.jpg?v=2",
-    (tex) => {
-      tex.colorSpace = THREE.SRGBColorSpace;
-      tex.anisotropy = Math.min(8, maxAnisotropy);
-      tex.minFilter = THREE.LinearMipmapLinearFilter;
-      tex.magFilter = THREE.LinearFilter;
-      tex.needsUpdate = true;
-      uniforms.uMap.value = tex;
-      fallbackTex.dispose();
-    },
-    undefined,
-    () => {
-      /* keep crisp fallback texture on load error */
-    }
-  );
-
-  // High-segment 48x48 portrait plane for tactile micro-surface wave
-  const panelGeo = new THREE.PlaneGeometry(2.36, 2.36, 48, 48);
-  const panelMat = new THREE.ShaderMaterial({
-    uniforms,
+  // Delicate open wireframe geometric core (frames Hero typography without obscuring it)
+  const coreGeo = new THREE.IcosahedronGeometry(0.9, 1);
+  const coreMat = new THREE.MeshBasicMaterial({
+    color: new THREE.Color(initialPalette.wire),
+    wireframe: true,
     transparent: true,
-    depthWrite: true,
-    side: THREE.FrontSide,
-    vertexShader: /* glsl */ `
-      uniform float uTime;
-      uniform vec2 uPointer;
-      uniform float uHover;
-
-      varying vec2 vUv;
-      varying vec3 vViewNormal;
-      varying vec3 vViewDir;
-      varying float vRipple;
-
-      void main() {
-        vUv = uv;
-        vec3 pos = position;
-
-        vec2 p = uv - 0.5;
-        vec2 pointerCenter = uPointer * 0.35;
-        float distPtr = length(p - pointerCenter);
-
-        float waveA = sin(p.x * 4.8 + uTime * 1.1) * cos(p.y * 4.4 - uTime * 0.85);
-        float waveB = sin(distPtr * 10.0 - uTime * 2.1) * exp(-distPtr * 3.4);
-        float disp = waveA * 0.024 + waveB * (0.022 + uHover * 0.014);
-
-        // Taper displacement softly near corners so bezel alignment stays clean
-        float edgeMask = smoothstep(0.55, 0.15, max(abs(p.x), abs(p.y)));
-        pos.z += disp * edgeMask;
-
-        // Analytical partial derivatives for smooth specular / Fresnel normal
-        float dWaveX = cos(p.x * 4.8 + uTime * 1.1) * 4.8 * cos(p.y * 4.4 - uTime * 0.85) * 0.024;
-        float dWaveY = -sin(p.x * 4.8 + uTime * 1.1) * sin(p.y * 4.4 - uTime * 0.85) * 4.4 * 0.024;
-        vec3 localNormal = normalize(vec3(-dWaveX * edgeMask, -dWaveY * edgeMask, 1.0));
-
-        vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);
-        vViewNormal = normalize(normalMatrix * localNormal);
-        vViewDir = normalize(-mvPos.xyz);
-        vRipple = waveB;
-
-        gl_Position = projectionMatrix * mvPos;
-      }
-    `,
-    fragmentShader: /* glsl */ `
-      uniform sampler2D uMap;
-      uniform float uTime;
-      uniform vec2 uPointer;
-      uniform vec3 uPrimaryColor;
-      uniform vec3 uSecondaryColor;
-      uniform vec3 uBgColor;
-      uniform float uThemeMix;
-      uniform float uOpacity;
-
-      varying vec2 vUv;
-      varying vec3 vViewNormal;
-      varying vec3 vViewDir;
-      varying float vRipple;
-
-      float sdRoundedBox(vec2 p, vec2 b, float r) {
-        vec2 q = abs(p) - b + r;
-        return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - r;
-      }
-
-      void main() {
-        vec2 centered = vUv - 0.5;
-        float dist = sdRoundedBox(centered, vec2(0.5), 0.145);
-        float aa = max(fwidth(dist), 0.0025);
-        float alphaMask = 1.0 - smoothstep(-aa, aa, dist);
-        if (alphaMask < 0.004) discard;
-
-        // Pointer-responsive parallax & subtle edge refraction
-        float rimZone = smoothstep(-0.14, 0.0, dist);
-        vec2 refractDir = normalize(centered + vec2(0.0001));
-        vec2 parallaxUv = centered * 0.94 + 0.5;
-        parallaxUv -= uPointer * 0.018;
-        parallaxUv += refractDir * (rimZone * 0.012 + vRipple * 0.006);
-        parallaxUv = clamp(parallaxUv, vec2(0.005), vec2(0.995));
-
-        vec3 portrait = texture2D(uMap, parallaxUv).rgb;
-
-        // Gentle studio vignette & theme contrast balance
-        float radialVig = smoothstep(0.76, 0.24, length(centered));
-        vec3 darkTone = mix(uBgColor * 0.65, portrait, 0.84 + radialVig * 0.16);
-        vec3 lightTone = mix(portrait * 0.94, portrait, radialVig);
-        vec3 baseCol = mix(darkTone, lightTone, uThemeMix);
-
-        // View-dependent Fresnel + thin turquoise -> amber hairline rim
-        vec3 N = normalize(vViewNormal);
-        vec3 V = normalize(vViewDir);
-        float fresnel = pow(1.0 - clamp(dot(N, V), 0.0, 1.0), 2.9);
-
-        float gradMix = clamp(vUv.x * 0.65 + (1.0 - vUv.y) * 0.35 + sin(uTime * 0.45) * 0.08, 0.0, 1.0);
-        vec3 rimGradient = mix(uPrimaryColor, uSecondaryColor, gradMix);
-
-        float edgeLine = exp(-abs(dist + 0.004) * 125.0);
-        float rimBoost = mix(0.28, 0.22, uThemeMix);
-        vec3 finalCol = baseCol + rimGradient * (fresnel * rimBoost + edgeLine * 0.40);
-
-        // Subtle glass sheen across upper-left angle
-        float sheen = pow(max(0.0, dot(N, normalize(vec3(-0.35, 0.55, 0.75)))), 14.0);
-        finalCol += mix(vec3(0.06), vec3(0.04), uThemeMix) * sheen;
-
-        gl_FragColor = vec4(finalCol, alphaMask * uOpacity);
-        #include <tonemapping_fragment>
-        #include <colorspace_fragment>
-      }
-    `
+    opacity: 0.22
   });
+  const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+  coreMesh.position.z = -0.32;
+  group.add(coreMesh);
 
-  const panelMesh = new THREE.Mesh(panelGeo, panelMat);
-  panelMesh.position.z = 0.04;
-  group.add(panelMesh);
-
-  // Subtle architectural backing plate behind the floating portrait
-  const backGeo = new THREE.PlaneGeometry(2.42, 2.42);
-  const backMat = new THREE.ShaderMaterial({
-    uniforms: {
-      uPrimaryColor: uniforms.uPrimaryColor,
-      uSecondaryColor: uniforms.uSecondaryColor,
-      uBgColor: uniforms.uBgColor,
-      uThemeMix: uniforms.uThemeMix
-    },
+  // Inner inclined slender ring
+  const ringMatInner = new THREE.MeshStandardMaterial({
+    color: new THREE.Color(initialPalette.lightPrimary),
+    emissive: new THREE.Color(initialPalette.lightPrimary),
+    emissiveIntensity: 0.22,
+    metalness: 0.72,
+    roughness: 0.26,
     transparent: true,
-    depthWrite: false,
-    vertexShader: /* glsl */ `
-      varying vec2 vUv;
-      void main() {
-        vUv = uv;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-      }
-    `,
-    fragmentShader: /* glsl */ `
-      uniform vec3 uPrimaryColor;
-      uniform vec3 uSecondaryColor;
-      uniform vec3 uBgColor;
-      uniform float uThemeMix;
-      varying vec2 vUv;
-      float sdRoundedBox(vec2 p, vec2 b, float r) {
-        vec2 q = abs(p) - b + r;
-        return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - r;
-      }
-      void main() {
-        float d = sdRoundedBox(vUv - 0.5, vec2(0.5), 0.145);
-        float alpha = (1.0 - smoothstep(-0.01, 0.01, d)) * mix(0.45, 0.22, uThemeMix);
-        vec3 col = mix(uBgColor, mix(uPrimaryColor, uSecondaryColor, vUv.x), 0.12);
-        gl_FragColor = vec4(col, alpha);
-        #include <colorspace_fragment>
-      }
-    `
+    opacity: 0.45
   });
-  const backMesh = new THREE.Mesh(backGeo, backMat);
-  backMesh.position.z = -0.05;
-  group.add(backMesh);
+  const innerRing = new THREE.Mesh(new THREE.TorusGeometry(1.22, 0.009, 16, 128), ringMatInner);
+  innerRing.position.z = -0.35;
+  innerRing.rotation.set(0.55, 0.42, -0.25);
+  group.add(innerRing);
 
   // Slender Geometric Rings (TorusGeometry thickness 0.012 + precision LineLoop)
   const ringMatPrimary = new THREE.MeshStandardMaterial({
@@ -577,7 +388,7 @@ function createHeroMonolith(initialPalette, maxAnisotropy) {
     transparent: true,
     opacity: 0.65
   });
-  const ring1 = new THREE.Mesh(new THREE.TorusGeometry(1.62, 0.012, 16, 128), ringMatPrimary);
+  const ring1 = new THREE.Mesh(new THREE.TorusGeometry(1.56, 0.012, 16, 128), ringMatPrimary);
   ring1.position.z = -0.48;
   ring1.rotation.set(0.22, -0.18, 0.12);
   group.add(ring1);
@@ -591,7 +402,7 @@ function createHeroMonolith(initialPalette, maxAnisotropy) {
     transparent: true,
     opacity: 0.52
   });
-  const ring2 = new THREE.Mesh(new THREE.TorusGeometry(1.94, 0.012, 16, 128), ringMatSecondary);
+  const ring2 = new THREE.Mesh(new THREE.TorusGeometry(1.9, 0.012, 16, 128), ringMatSecondary);
   ring2.position.z = -0.62;
   ring2.rotation.set(-0.24, 0.2, -0.2);
   group.add(ring2);
@@ -699,10 +510,13 @@ function createHeroMonolith(initialPalette, maxAnisotropy) {
   return {
     group,
     uniforms,
-    panelMesh,
+    coreMesh,
+    innerRing,
     ring1,
     ring2,
     outerLoop,
+    coreMat,
+    ringMatInner,
     ringMatPrimary,
     ringMatSecondary,
     outerLoopMat,
@@ -718,7 +532,7 @@ function createHeroMonolith(initialPalette, maxAnisotropy) {
       const isMobile = viewportWidth < 768;
       const aspect = viewportWidth / Math.max(1, viewportHeight);
       const targetScale = isMobile
-        ? THREE.MathUtils.clamp(aspect * 0.76, 0.36, 0.48)
+        ? THREE.MathUtils.clamp(aspect * 0.72, 0.34, 0.46)
         : viewportWidth < 1100
         ? 0.82
         : 0.94;
@@ -735,8 +549,12 @@ function createHeroMonolith(initialPalette, maxAnisotropy) {
       group.rotation.y = THREE.MathUtils.lerp(group.rotation.y, tiltY, Math.min(1, dt * 5));
 
       // Gentle float & precision orbital drift
-      panelMesh.position.y = Math.sin(time * 0.9) * 0.035;
-      backMesh.position.y = panelMesh.position.y;
+      coreMesh.position.y = Math.sin(time * 0.9) * 0.035;
+      coreMesh.rotation.y += dt * 0.14;
+      coreMesh.rotation.x += dt * 0.08;
+
+      innerRing.rotation.z += dt * 0.22;
+      innerRing.rotation.y -= dt * 0.12;
 
       ring1.rotation.z += dt * 0.16;
       ring1.rotation.x = 0.22 + Math.sin(time * 0.35) * 0.07;
@@ -752,6 +570,9 @@ function createHeroMonolith(initialPalette, maxAnisotropy) {
       uniforms.uBgColor.value.copy(lerpedColors.bg);
       uniforms.uThemeMix.value = themeMix;
 
+      coreMat.color.copy(lerpedColors.wire);
+      ringMatInner.color.copy(lerpedColors.primary);
+      ringMatInner.emissive.copy(lerpedColors.primary);
       ringMatPrimary.color.copy(lerpedColors.primary);
       ringMatPrimary.emissive.copy(lerpedColors.primary);
       ringMatSecondary.color.copy(lerpedColors.secondary);
@@ -1450,18 +1271,18 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
       const pose = STEP_POSES[activeStep];
       const lerpAlpha = Math.min(1, dt * 5.2);
 
-      // Responsive staging: fit neatly in right 66% on desktop, center cleanly on mobile/tablet (<821px)
+      // Responsive staging: fit neatly in right 68% on desktop, center cleanly on mobile/tablet (<821px)
       const isStackedLayout = viewportWidth < 821;
       const targetGroupScale =
         viewportWidth < 600
-          ? 0.35
+          ? 0.24
           : isStackedLayout
-          ? 0.54
+          ? 0.46
           : viewportWidth < 1200
-          ? 0.78
-          : 0.92;
-      const targetGroupX = isStackedLayout ? -1.9 : 0.0;
-      const targetGroupY = isStackedLayout ? -1.1 : 0.0;
+          ? 0.72
+          : 0.88;
+      const targetGroupX = isStackedLayout ? -2.38 : 0.0;
+      const targetGroupY = viewportWidth < 600 ? -1.78 : isStackedLayout ? -1.45 : 0.0;
 
       group.scale.setScalar(
         THREE.MathUtils.lerp(group.scale.x, targetGroupScale, lerpAlpha)
@@ -1922,8 +1743,8 @@ export function initPortfolioScene() {
   // Build Stations
   const stationGroups = new Map();
 
-  // Station 01 — Hero Monolith
-  const heroMonolith = createHeroMonolith(initialPalette, maxAnisotropy);
+  // Station 01 — Hero Orbital Gyroscope
+  const heroMonolith = createHeroMonolith(initialPalette);
   heroMonolith.group.position.set(
     CAMERA_STATIONS[0].anchor[0],
     CAMERA_STATIONS[0].anchor[1],

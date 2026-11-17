@@ -31,10 +31,10 @@ export const CAMERA_STATIONS = [
   {
     id: "scene-featured",
     index: 3,
-    // Anchor sits in the right 66% open 3D stage while left 34% holds narrative
-    anchor: [-0.95, -0.1, -60.0],
-    cameraPos: [-2.85, -0.05, -51.8],
-    lookAt: [-2.85, -0.1, -60.0]
+    // Anchor sits in the right 68% open 3D stage while left 32% holds narrative
+    anchor: [-0.45, -0.1, -60.0],
+    cameraPos: [-2.95, -0.05, -51.8],
+    lookAt: [-2.95, -0.1, -60.0]
   },
   {
     id: "scene-iot",
