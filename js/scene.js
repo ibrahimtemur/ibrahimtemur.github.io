@@ -12,9 +12,9 @@ import {
   HERO_INTRO_START_Z,
   HERO_INTRO_END_Z,
   createCameraRig
-} from "./camera-path.js?v=12";
-import { FEATURED_SCREENS, getActiveLang } from "./i18n.js?v=12";
-import { getActiveTheme, getThemeSceneColors } from "./theme.js?v=12";
+} from "./camera-path.js?v=15";
+import { FEATURED_SCREENS, getActiveLang } from "./i18n.js?v=15";
+import { getActiveTheme, getThemeSceneColors } from "./theme.js?v=15";
 
 const MAC_SCREENSHOT_BASE =
   "https://raw.githubusercontent.com/ibrahimtemur/mac-remote-app/main/screenshots/";
@@ -1428,7 +1428,7 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
       mobileRot: new THREE.Euler(0.02, 0.22, 0.0),
       mobileScale: 0.86,
       mobileFocus: 1.0,
-      serverPos: new THREE.Vector3(1.52, 0.14, -0.42),
+      serverPos: new THREE.Vector3(1.34, 0.14, -0.42),
       serverRot: new THREE.Euler(-0.02, -0.22, 0.0),
       serverScale: 0.88,
       serverFocus: 0.86,
@@ -1440,7 +1440,7 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
       mobileRot: new THREE.Euler(0.03, 0.06, 0.0),
       mobileScale: 0.94,
       mobileFocus: 1.0,
-      serverPos: new THREE.Vector3(1.92, 0.16, -0.68),
+      serverPos: new THREE.Vector3(1.64, 0.16, -0.68),
       serverRot: new THREE.Euler(-0.02, -0.28, 0.0),
       serverScale: 0.82,
       serverFocus: 0.76,
@@ -1511,16 +1511,34 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
     },
     update(time, dt, pointerTarget, viewportWidth, scrollT = 0) {
       const distT = Math.abs(scrollT - 0.5);
-      const vis = THREE.MathUtils.smoothstep(0.095 - distT, 0.0, 0.045);
+      let vis = THREE.MathUtils.smoothstep(0.095 - distT, 0.0, 0.045);
+
+      const isStackedLayout = viewportWidth < 821;
+      const isCompactMobile = viewportWidth < 600;
+      let mobileDomWorldY = null;
+
+      if (isStackedLayout) {
+        const stageWin = document.getElementById("featuredStageWindow");
+        if (stageWin) {
+          const rect = stageWin.getBoundingClientRect();
+          const vh = Math.max(1, window.innerHeight || 812);
+          const winVis =
+            THREE.MathUtils.smoothstep(rect.bottom, 60, 160) *
+            THREE.MathUtils.smoothstep(vh - rect.top, 40, 140);
+          vis *= winVis;
+          const rectCenterY = rect.top + rect.height * 0.5;
+          const ndcY = 1 - (rectCenterY / vh) * 2;
+          mobileDomWorldY = -0.05 + ndcY * 3.15;
+        }
+      }
+
       group.visible = vis > 0.005;
       if (!group.visible) return;
 
       const pose = STEP_POSES[activeStep];
       const lerpAlpha = Math.min(1, dt * 5.2);
 
-      // Responsive staging: fit neatly in right 68% on desktop, lower open window on mobile
-      const isStackedLayout = viewportWidth < 821;
-      const isCompactMobile = viewportWidth < 600;
+      // Responsive staging: fit neatly in right 68% on desktop, aligned to #featuredStageWindow on mobile
       const targetGroupScale = isCompactMobile
         ? 0.25
         : isStackedLayout
@@ -1530,7 +1548,7 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
         : viewportWidth < 1280
         ? 0.72
         : 0.84;
-      const targetGroupX = isCompactMobile ? -2.55 : isStackedLayout ? -2.38 : 0.0;
+      const targetGroupX = isCompactMobile ? -2.55 : isStackedLayout ? -2.38 : -0.18;
       const targetGroupY = isCompactMobile ? -1.6 : isStackedLayout ? -1.45 : 0.0;
       const xSpread = isCompactMobile ? 0.72 : 1.0;
 
@@ -1542,11 +1560,15 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
         CAMERA_STATIONS[3].anchor[0] + targetGroupX,
         lerpAlpha
       );
-      group.position.y = THREE.MathUtils.lerp(
-        group.position.y,
-        CAMERA_STATIONS[3].anchor[1] + targetGroupY,
-        lerpAlpha
-      );
+      if (isStackedLayout && mobileDomWorldY !== null) {
+        group.position.y = mobileDomWorldY;
+      } else {
+        group.position.y = THREE.MathUtils.lerp(
+          group.position.y,
+          CAMERA_STATIONS[3].anchor[1] + targetGroupY,
+          lerpAlpha
+        );
+      }
       group.position.z = THREE.MathUtils.lerp(
         group.position.z,
         CAMERA_STATIONS[3].anchor[2] - (1 - vis) * 3.5,

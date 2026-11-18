@@ -13,17 +13,17 @@ import {
   t,
   initI18n,
   onLanguageChange
-} from "./i18n.js?v=12";
-import { getActiveTheme, getThemeSceneColors, initTheme } from "./theme.js?v=12";
+} from "./i18n.js?v=15";
+import { getActiveTheme, getThemeSceneColors, initTheme } from "./theme.js?v=15";
 import {
   EMAIL_ADDRESS,
   SOCIAL_LINKS,
   PROJECTS_DATA,
   getProjects,
   getProjectById
-} from "./projects-data.js?v=12";
-import { syncWithGitHubApi, updateGitHubStatusLabel } from "./github.js?v=12";
-import { initPalette } from "./palette.js?v=12";
+} from "./projects-data.js?v=15";
+import { syncWithGitHubApi, updateGitHubStatusLabel } from "./github.js?v=15";
+import { initPalette } from "./palette.js?v=15";
 
 export { getActiveLang, getThemeSceneColors };
 
@@ -659,6 +659,7 @@ function initProjectsTrackDrag() {
 
   container.addEventListener("mousedown", (e) => {
     if (currentViewMode !== "stage") return;
+    if (container.scrollWidth <= container.clientWidth + 2) return;
     if (e.target.closest("a, button")) return;
     isDown = true;
     dragged = false;

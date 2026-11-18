@@ -3,8 +3,8 @@
    Updates stars, forks, and language on curated repos & surfaces new public repos.
    ========================================================================== */
 
-import { GITHUB_USERNAME, PROJECTS_DATA } from "./projects-data.js?v=12";
-import { t } from "./i18n.js?v=12";
+import { GITHUB_USERNAME, PROJECTS_DATA } from "./projects-data.js?v=15";
+import { t } from "./i18n.js?v=15";
 
 let githubSyncedState = "syncing"; // 'syncing' | 'synced' | 'fallback'
 
@@ -102,10 +102,20 @@ export async function syncWithGitHubApi(onUpdate = null) {
               tr: `GitHub Repo · ${langTag}`,
               en: `GitHub Repo · ${langTag}`
             },
-            description: {
-              tr: repo.description || "GitHub üzerinde yayınlanan açık kaynak yazılım projesi.",
-              en: repo.description || "Open-source software project published on GitHub."
-            },
+            description: (() => {
+              const rawDesc = (repo.description || "")
+                .replace(/\(\s*(?:Aydın\s+)?Adnan\s+Menderes\s+(?:Üniversitesi|University)(?:\s*\(AD[ÜU]\))?\s*\)/gi, "")
+                .replace(/(?:Aydın\s+)?Adnan\s+Menderes\s+(?:Üniversitesi|University)(?:\s*\(AD[ÜU]\))?/gi, "")
+                .replace(/\(\s*AD[ÜU]\s*\)/gi, "")
+                .replace(/(?<![\p{L}\p{N}])AD[ÜU](?![\p{L}\p{N}])/giu, "")
+                .replace(/\s{2,}/g, " ")
+                .replace(/\s+([,.;:!?])/g, "$1")
+                .trim();
+              return {
+                tr: rawDesc || "GitHub üzerinde yayınlanan açık kaynak yazılım projesi.",
+                en: rawDesc || "Open-source software project published on GitHub."
+              };
+            })(),
             tech: [langTag, "Git", "Open Source"],
             links: [
               ...(repo.homepage
