@@ -4,9 +4,9 @@
    GSAP ScrollTrigger Section Spline Mapping & Scene 04 Mac Remote Pinning.
    ========================================================================== */
 
-import { CAMERA_STATIONS } from "./camera-path.js?v=10";
-import { initPortfolioScene } from "./scene.js?v=10";
-import { getActiveTheme } from "./theme.js?v=10";
+import { CAMERA_STATIONS } from "./camera-path.js?v=11";
+import { initPortfolioScene } from "./scene.js?v=11";
+import { getActiveTheme } from "./theme.js?v=11";
 import {
   initUI,
   dismissPreloader,
@@ -14,7 +14,7 @@ import {
   setScrollProgress,
   updateFeaturedScreen,
   getActiveLang
-} from "./ui.js?v=10";
+} from "./ui.js?v=11";
 
 function getDocumentOffsetTop(el) {
   if (!el) return 0;

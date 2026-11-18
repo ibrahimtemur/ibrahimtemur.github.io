@@ -8,9 +8,9 @@
   <meta name="author" content="İbrahim Temur" />
 
   <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=10" />
-  <link rel="alternate icon" type="image/png" href="favicon.png?v=10" />
-  <link rel="apple-touch-icon" href="favicon.png?v=10" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=11" />
+  <link rel="alternate icon" type="image/png" href="favicon.png?v=11" />
+  <link rel="apple-touch-icon" href="favicon.png?v=11" />
 
   <!-- Google Fonts: Inter Variable Only -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -39,9 +39,9 @@
   </script>
 
   <!-- Shared Architecture Stylesheets -->
-  <link rel="stylesheet" href="css/tokens.css?v=10" />
-  <link rel="stylesheet" href="css/base.css?v=10" />
-  <link rel="stylesheet" href="css/components.css?v=10" />
+  <link rel="stylesheet" href="css/tokens.css?v=11" />
+  <link rel="stylesheet" href="css/base.css?v=11" />
+  <link rel="stylesheet" href="css/components.css?v=11" />
 
   <style>
     .legal-stage {
@@ -233,40 +233,42 @@
 
   <!-- Left Vertical Chapter Rail (01 - 04 + Live Scroll Track) -->
   <nav class="section-rail" id="legalSectionRail" aria-label="Yasal Bölüm Navigasyonu">
-    <div class="rail-progress-track" aria-hidden="true">
+    <div class="rail-track" aria-hidden="true">
       <div class="rail-progress-fill"></div>
     </div>
 
-    <ul class="rail-steps" role="list">
-      <li>
+    <span class="rail-mobile-active" id="legalRailMobileActive" aria-hidden="true">01 / 04</span>
+
+    <ol class="rail-steps">
+      <li class="rail-step-wrap">
         <button type="button" class="rail-step is-active" data-legal-target="legal-sec-1" aria-current="step">
           <i data-lucide="copyright" class="rail-step-icon"></i>
           <span class="rail-step-num">01</span>
           <span class="rail-step-label" data-i18n="legal.rail.1">Telif Hakkı</span>
         </button>
       </li>
-      <li>
+      <li class="rail-step-wrap">
         <button type="button" class="rail-step" data-legal-target="legal-sec-2">
           <i data-lucide="folder-git-2" class="rail-step-icon"></i>
           <span class="rail-step-num">02</span>
           <span class="rail-step-label" data-i18n="legal.rail.2">Açık Kaynak</span>
         </button>
       </li>
-      <li>
+      <li class="rail-step-wrap">
         <button type="button" class="rail-step" data-legal-target="legal-sec-3">
           <i data-lucide="scale" class="rail-step-icon"></i>
           <span class="rail-step-num">03</span>
           <span class="rail-step-label" data-i18n="legal.rail.3">İzinler</span>
         </button>
       </li>
-      <li>
+      <li class="rail-step-wrap">
         <button type="button" class="rail-step" data-legal-target="legal-sec-4">
           <i data-lucide="mail" class="rail-step-icon"></i>
           <span class="rail-step-num">04</span>
           <span class="rail-step-label" data-i18n="legal.rail.4">İletişim</span>
         </button>
       </li>
-    </ul>
+    </ol>
   </nav>
 
   <!-- Main Open Legal Surface -->
@@ -412,8 +414,8 @@
   </script>
 
   <script type="module">
-    import { initTheme, getActiveTheme } from "./js/theme.js?v=10";
-    import { initLegalScene } from "./js/scene.js?v=10";
+    import { initTheme, getActiveTheme } from "./js/theme.js?v=11";
+    import { initLegalScene } from "./js/scene.js?v=11";
 
     const I18N_LEGAL = {
       tr: {
@@ -549,6 +551,7 @@
     const legalRail = document.getElementById("legalSectionRail");
     const legalChapters = ["legal-sec-1", "legal-sec-2", "legal-sec-3", "legal-sec-4"];
     const legalRailBtns = Array.from(document.querySelectorAll("[data-legal-target]"));
+    const legalMobileCounter = document.getElementById("legalRailMobileActive");
     const brandCorner = document.getElementById("brandCorner");
 
     function updateLegalScrollSync() {
@@ -561,14 +564,22 @@
       sceneController.setScrollProgress(progress);
 
       const probeY = scrollY + window.innerHeight * 0.4;
+      let activeIdx = 0;
       let activeId = legalChapters[0];
-      legalChapters.forEach((id) => {
+      legalChapters.forEach((id, idx) => {
         const el = document.getElementById(id);
         if (el) {
           const top = el.getBoundingClientRect().top + scrollY;
-          if (probeY >= top) activeId = id;
+          if (probeY >= top) {
+            activeId = id;
+            activeIdx = idx;
+          }
         }
       });
+
+      if (legalMobileCounter) {
+        legalMobileCounter.textContent = `0${activeIdx + 1} / 04`;
+      }
 
       legalRailBtns.forEach((btn) => {
         const match = btn.getAttribute("data-legal-target") === activeId;

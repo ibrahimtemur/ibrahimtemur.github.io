@@ -668,15 +668,18 @@
   .iot-pcb-window {
     position: relative;
     min-height: clamp(260px, 46vh, 460px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 100%;
+    display: grid;
+    place-items: center;
   }
 
   .iot-fallback-schematic {
-    display: block;
-    width: 100%;
-    max-width: 520px;
+    display: block !important;
+    width: min(100%, 520px);
+    height: auto;
+    aspect-ratio: 480 / 300;
+    opacity: 1;
+    visibility: visible;
     transition:
       transform var(--dur-base) var(--ease-out-expo),
       filter var(--dur-fast) ease;
@@ -797,17 +800,14 @@
     color: var(--text-secondary);
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 820px) {
     .iot-split-layout {
       grid-template-columns: 1fr;
+      gap: var(--space-6);
     }
 
     .iot-pcb-window {
-      min-height: 160px;
-    }
-
-    html.webgl-fallback .iot-pcb-window {
-      min-height: 240px;
+      min-height: 220px;
     }
   }
 
