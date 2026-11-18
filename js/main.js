@@ -4,9 +4,9 @@
    GSAP ScrollTrigger Section Spline Mapping & Scene 04 Mac Remote Pinning.
    ========================================================================== */
 
-import { CAMERA_STATIONS } from "./camera-path.js?v=11";
-import { initPortfolioScene } from "./scene.js?v=11";
-import { getActiveTheme } from "./theme.js?v=11";
+import { CAMERA_STATIONS } from "./camera-path.js?v=12";
+import { initPortfolioScene } from "./scene.js?v=12";
+import { getActiveTheme } from "./theme.js?v=12";
 import {
   initUI,
   dismissPreloader,
@@ -14,7 +14,7 @@ import {
   setScrollProgress,
   updateFeaturedScreen,
   getActiveLang
-} from "./ui.js?v=11";
+} from "./ui.js?v=12";
 
 function getDocumentOffsetTop(el) {
   if (!el) return 0;
@@ -222,61 +222,56 @@ function bootPortfolio() {
     });
   }
 
-  // 6. Section-Aware Scroll -> 3D Camera Spline & Left Rail Sync (Cached bounds: zero layout thrash)
+  // 6. Section-Aware Scroll -> 3D Camera Spline & Left Rail Sync (Live viewport geometry)
   const stationElements = CAMERA_STATIONS.map((s) => document.getElementById(s.id));
-  let cachedBounds = [];
-  let cachedMaxScroll = 1;
 
-  function recomputeStationBounds() {
-    const scrollNow = window.scrollY || window.pageYOffset || 0;
-    cachedMaxScroll = Math.max(
+  function updateCameraAndRailFromScroll() {
+    const scrollY = window.scrollY || window.pageYOffset || 0;
+    const vh = window.innerHeight || 900;
+    const maxScroll = Math.max(
       1,
-      document.documentElement.scrollHeight - window.innerHeight
+      document.documentElement.scrollHeight - vh
     );
-    cachedBounds = stationElements.map((el, i) => {
+    const rawProgress = Math.max(0, Math.min(1, scrollY / maxScroll));
+    setScrollProgress(rawProgress);
+
+    const bounds = stationElements.map((el, i) => {
       if (i === 3 && featuredTrigger) {
-        return { start: featuredTrigger.start, end: featuredTrigger.end };
+        return {
+          start: featuredTrigger.start - scrollY,
+          end: featuredTrigger.end - scrollY
+        };
       }
       const anchorEl = el?.parentElement?.classList?.contains("pin-spacer")
         ? el.parentElement
         : el;
-      const top = anchorEl
-        ? Math.round(anchorEl.getBoundingClientRect().top + scrollNow)
-        : 0;
+      const top = anchorEl ? anchorEl.getBoundingClientRect().top : 0;
       if (i === 3 && !featuredTrigger && el) {
-        const end = top + Math.max(0, el.offsetHeight - window.innerHeight * 0.7);
+        const end = top + Math.max(0, el.offsetHeight - vh * 0.7);
         return { start: top, end };
       }
       return { start: top, end: top };
     });
-  }
 
-  function updateCameraAndRailFromScroll() {
-    if (!cachedBounds.length) recomputeStationBounds();
-    const scrollY = window.scrollY || window.pageYOffset || 0;
-    const rawProgress = Math.max(0, Math.min(1, scrollY / cachedMaxScroll));
-    setScrollProgress(rawProgress);
-
-    const bounds = cachedBounds;
     const count = bounds.length;
     let splineT = 0;
 
-    if (scrollY <= bounds[0].start) {
+    if (bounds[0].start >= 0) {
       splineT = 0;
-    } else if (scrollY >= bounds[count - 1].start || rawProgress >= 0.999) {
+    } else if (bounds[count - 1].start <= 0 || rawProgress >= 0.999) {
       splineT = 1;
     } else {
       for (let i = 0; i < count; i++) {
         const cur = bounds[i];
-        if (scrollY >= cur.start && scrollY <= cur.end) {
+        if (cur.start <= 0 && cur.end >= 0) {
           splineT = i / (count - 1);
           break;
         }
         if (i < count - 1) {
           const next = bounds[i + 1];
-          if (scrollY > cur.end && scrollY < next.start) {
+          if (cur.end < 0 && next.start > 0) {
             const span = Math.max(1, next.start - cur.end);
-            const frac = (scrollY - cur.end) / span;
+            const frac = -cur.end / span;
             splineT = (i + frac) / (count - 1);
             break;
           }
@@ -286,35 +281,29 @@ function bootPortfolio() {
 
     sceneController.setScrollProgress(splineT);
 
-    // Sync active section rail precisely even through pinned stretches
-    const probeY = scrollY + window.innerHeight * 0.38;
+    // Sync active section rail precisely against live viewport position
+    const thresholdY = vh * 0.42;
     let activeIdx = 0;
-    for (let i = 0; i < bounds.length; i++) {
-      if (probeY >= bounds[i].start) {
+    for (let i = 0; i < count; i++) {
+      if (bounds[i].start <= thresholdY) {
         activeIdx = i;
       }
     }
     setActiveSection(activeIdx);
   }
 
-  recomputeStationBounds();
   window.addEventListener("scroll", updateCameraAndRailFromScroll, { passive: true });
   window.addEventListener("resize", () => {
     if (hasScrollTrigger) window.ScrollTrigger.refresh();
-    recomputeStationBounds();
     updateCameraAndRailFromScroll();
   });
   window.addEventListener("portfolio:projects-updated", () => {
     if (hasScrollTrigger) window.ScrollTrigger.refresh();
-    recomputeStationBounds();
     updateCameraAndRailFromScroll();
   });
 
   if (hasScrollTrigger) {
-    window.ScrollTrigger.addEventListener("refresh", () => {
-      recomputeStationBounds();
-      updateCameraAndRailFromScroll();
-    });
+    window.ScrollTrigger.addEventListener("refresh", updateCameraAndRailFromScroll);
     window.ScrollTrigger.refresh();
   }
   updateCameraAndRailFromScroll();

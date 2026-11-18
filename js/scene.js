@@ -12,9 +12,9 @@ import {
   HERO_INTRO_START_Z,
   HERO_INTRO_END_Z,
   createCameraRig
-} from "./camera-path.js?v=11";
-import { FEATURED_SCREENS, getActiveLang } from "./i18n.js?v=11";
-import { getActiveTheme, getThemeSceneColors } from "./theme.js?v=11";
+} from "./camera-path.js?v=12";
+import { FEATURED_SCREENS, getActiveLang } from "./i18n.js?v=12";
+import { getActiveTheme, getThemeSceneColors } from "./theme.js?v=12";
 
 const MAC_SCREENSHOT_BASE =
   "https://raw.githubusercontent.com/ibrahimtemur/mac-remote-app/main/screenshots/";
@@ -640,8 +640,8 @@ function createHeroMonolith(initialPalette) {
       // Compact scale perched cleanly ABOVE "İBRAHİM TEMUR" or in Legal header corner
       const targetScale = isLegalCompact
         ? isMobile
-          ? 0.22
-          : 0.32
+          ? 0.165
+          : 0.3
         : isMobile
         ? 0.3
         : viewportWidth < 1100
@@ -651,7 +651,7 @@ function createHeroMonolith(initialPalette) {
         ? viewportWidth >= 1080
           ? 2.25 + pointerTarget.x * 0.1
           : isMobile
-          ? 0.62
+          ? 0.54
           : 1.15
         : isMobile
         ? 0.0
@@ -660,7 +660,7 @@ function createHeroMonolith(initialPalette) {
         ? viewportWidth >= 1080
           ? 1.05 + pointerTarget.y * 0.06
           : isMobile
-          ? 1.72
+          ? 2.08
           : 1.55
         : isMobile
         ? 0.92
