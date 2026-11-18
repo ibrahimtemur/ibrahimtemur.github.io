@@ -33,18 +33,6 @@
     color: var(--accent-primary);
   }
 
-  .brand-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 1px solid var(--border-strong);
-    flex-shrink: 0;
-    transition:
-      width var(--dur-base) var(--ease-out-expo),
-      height var(--dur-base) var(--ease-out-expo);
-  }
-
   .brand-corner-meta {
     display: flex;
     flex-direction: column;
@@ -70,11 +58,6 @@
     transition:
       opacity var(--dur-base) var(--ease-out-expo),
       max-height var(--dur-base) var(--ease-out-expo);
-  }
-
-  .brand-corner.is-compact .brand-avatar {
-    width: 26px;
-    height: 26px;
   }
 
   .brand-corner.is-compact .brand-corner-name {

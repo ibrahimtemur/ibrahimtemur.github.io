@@ -12,9 +12,9 @@ import {
   HERO_INTRO_START_Z,
   HERO_INTRO_END_Z,
   createCameraRig
-} from "./camera-path.js?v=8";
-import { FEATURED_SCREENS, getActiveLang } from "./i18n.js?v=8";
-import { getActiveTheme, getThemeSceneColors } from "./theme.js?v=8";
+} from "./camera-path.js?v=9";
+import { FEATURED_SCREENS, getActiveLang } from "./i18n.js?v=9";
+import { getActiveTheme, getThemeSceneColors } from "./theme.js?v=9";
 
 const MAC_SCREENSHOT_BASE =
   "https://raw.githubusercontent.com/ibrahimtemur/mac-remote-app/main/screenshots/";
@@ -1097,6 +1097,9 @@ function createFlowingLightBridge(initialPalette) {
 
   return {
     group: bridgeGroup,
+    setPixelRatio(dpr) {
+      packetMat.uniforms.uPixelRatio.value = dpr;
+    },
     update(time, startPos, endPos, intensity) {
       uniforms.uStartPos.value.copy(startPos);
       uniforms.uEndPos.value.copy(endPos);
@@ -1490,14 +1493,16 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
       const isStackedLayout = viewportWidth < 821;
       const isCompactMobile = viewportWidth < 600;
       const targetGroupScale = isCompactMobile
-        ? 0.27
+        ? 0.25
         : isStackedLayout
-        ? 0.43
-        : viewportWidth < 1200
-        ? 0.68
+        ? 0.42
+        : viewportWidth < 1040
+        ? 0.56
+        : viewportWidth < 1280
+        ? 0.72
         : 0.84;
       const targetGroupX = isCompactMobile ? -2.55 : isStackedLayout ? -2.38 : 0.0;
-      const targetGroupY = isCompactMobile ? -1.45 : isStackedLayout ? -1.45 : 0.0;
+      const targetGroupY = isCompactMobile ? -1.6 : isStackedLayout ? -1.45 : 0.0;
       const xSpread = isCompactMobile ? 0.72 : 1.0;
 
       group.scale.setScalar(
@@ -1629,6 +1634,9 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
 
       baseRingMat.color.copy(lerpedColors.wire);
       lightBridge.syncTheme(lerpedColors);
+    },
+    setPixelRatio(dpr) {
+      lightBridge.setPixelRatio(dpr);
     }
   };
 }
@@ -2317,12 +2325,12 @@ function createIotPcbStage(station, initialPalette) {
     syncTheme(lerpedColors) {
       pcbRimMat.color.copy(lerpedColors.primary);
       adcBodyMat.emissive.copy(lerpedColors.primary);
-      if (activeState === "idle" || activeState === "brewing" || activeState === "done") {
-        targetLedColor.copy(
-          activeState === "heating" ? lerpedColors.secondary : lerpedColors.primary
-        );
-      } else {
+      if (activeState === "heating") {
         targetLedColor.copy(lerpedColors.secondary);
+      } else if (activeState === "idle") {
+        targetLedColor.lerpColors(lerpedColors.wire, lerpedColors.primary, 0.45);
+      } else {
+        targetLedColor.copy(lerpedColors.primary);
       }
     }
   };
@@ -2758,6 +2766,7 @@ export function initPortfolioScene() {
     camera.aspect = viewportWidth / Math.max(1, viewportHeight);
     camera.updateProjectionMatrix();
     heroMonolith.sparkMat.uniforms.uPixelRatio.value = nextDpr;
+    macRemoteStage.setPixelRatio(nextDpr);
     contactStage.waveMat.uniforms.uPixelRatio.value = nextDpr;
     atmosphere.points.material.uniforms.uPixelRatio.value = nextDpr;
   }

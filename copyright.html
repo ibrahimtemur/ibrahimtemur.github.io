@@ -39,9 +39,9 @@
   </script>
 
   <!-- Shared Architecture Stylesheets -->
-  <link rel="stylesheet" href="css/tokens.css?v=8" />
-  <link rel="stylesheet" href="css/base.css?v=8" />
-  <link rel="stylesheet" href="css/components.css?v=8" />
+  <link rel="stylesheet" href="css/tokens.css?v=9" />
+  <link rel="stylesheet" href="css/base.css?v=9" />
+  <link rel="stylesheet" href="css/components.css?v=9" />
 
   <style>
     .legal-stage {
@@ -187,11 +187,11 @@
   <!-- Top-Left Minimal Brand Corner (Consistent with Main Portfolio, Zero Avatar) -->
   <div class="brand-corner">
     <a href="index.html" class="brand-corner-link" aria-label="İbrahim Temur Ana Sayfa">
-      <span class="brand-name-text">İbrahim Temur</span>
+      <span class="brand-corner-name">İbrahim Temur</span>
     </a>
   </div>
 
-  <!-- Main Open Editorial Legal Surface -->
+  <!-- Main Open Legal Surface -->
   <main class="legal-stage" id="legalMain">
     <div class="legal-back-row">
       <a href="index.html" class="hairline-action">
@@ -308,11 +308,11 @@
 
     <span class="island-divider" aria-hidden="true"></span>
 
-    <button type="button" class="island-icon-btn" id="themeToggleBtn" aria-label="Tema Değiştir">
+    <button type="button" class="island-btn" id="themeToggleBtn" aria-label="Tema Değiştir">
       <i data-lucide="sun" id="themeIcon" style="width:16px;height:16px;"></i>
     </button>
 
-    <a href="index.html" class="island-icon-btn" aria-label="Portföye Dön" title="Portföye Dön">
+    <a href="index.html" class="island-btn" aria-label="Portföye Dön" title="Portföye Dön">
       <i data-lucide="arrow-left" style="width:16px;height:16px;"></i>
     </a>
   </div>
@@ -321,7 +321,7 @@
   <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
 
   <script type="module">
-    import { initTheme } from "./js/theme.js?v=8";
+    import { initTheme } from "./js/theme.js?v=9";
 
     const I18N_LEGAL = {
       tr: {

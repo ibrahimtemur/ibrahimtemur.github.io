@@ -1,6 +1,6 @@
 /* ==========================================================================
    3D CAMERA SPLINE & 7-STATION SPATIAL ROUTE (js/camera-path.js)
-   Maps the 7 editorial scenes to a continuous CatmullRomCurve3 camera path
+   Maps the 7 showcase scenes to a continuous CatmullRomCurve3 camera path
    and coordinated lookAt curve with viewport-responsive Hero & Stage offsets.
    ========================================================================== */
 
