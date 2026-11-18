@@ -3,8 +3,8 @@
    Updates stars, forks, and language on curated repos & surfaces new public repos.
    ========================================================================== */
 
-import { GITHUB_USERNAME, PROJECTS_DATA } from "./projects-data.js";
-import { t } from "./i18n.js";
+import { GITHUB_USERNAME, PROJECTS_DATA } from "./projects-data.js?v=6";
+import { t } from "./i18n.js?v=6";
 
 let githubSyncedState = "syncing"; // 'syncing' | 'synced' | 'fallback'
 

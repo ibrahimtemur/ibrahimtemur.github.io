@@ -4,9 +4,9 @@
    GSAP ScrollTrigger Section Spline Mapping & Scene 04 Mac Remote Pinning.
    ========================================================================== */
 
-import { CAMERA_STATIONS } from "./camera-path.js";
-import { initPortfolioScene } from "./scene.js";
-import { getActiveTheme } from "./theme.js";
+import { CAMERA_STATIONS } from "./camera-path.js?v=6";
+import { initPortfolioScene } from "./scene.js?v=6";
+import { getActiveTheme } from "./theme.js?v=6";
 import {
   initUI,
   dismissPreloader,
@@ -14,7 +14,7 @@ import {
   setScrollProgress,
   updateFeaturedScreen,
   getActiveLang
-} from "./ui.js";
+} from "./ui.js?v=6";
 
 function getDocumentOffsetTop(el) {
   if (!el) return 0;
@@ -48,9 +48,7 @@ function bootPortfolio() {
       touchMultiplier: 1.35,
       prevent: (node) =>
         Boolean(
-          node?.closest?.(
-            "#slideDrawer, #curtainMenu, #commandPaletteBackdrop, .projects-track"
-          )
+          node?.closest?.("#slideDrawer, #curtainMenu, #commandPaletteBackdrop")
         )
     });
   }
@@ -224,19 +222,17 @@ function bootPortfolio() {
     });
   }
 
-  // 6. Section-Aware Scroll -> 3D Camera Spline & Left Rail Sync
+  // 6. Section-Aware Scroll -> 3D Camera Spline & Left Rail Sync (Cached bounds: zero layout thrash)
   const stationElements = CAMERA_STATIONS.map((s) => document.getElementById(s.id));
+  let cachedBounds = [];
+  let cachedMaxScroll = 1;
 
-  function updateCameraAndRailFromScroll() {
-    const scrollY = window.scrollY || window.pageYOffset || 0;
-    const maxScroll = Math.max(
+  function recomputeStationBounds() {
+    cachedMaxScroll = Math.max(
       1,
       document.documentElement.scrollHeight - window.innerHeight
     );
-    const rawProgress = Math.max(0, Math.min(1, scrollY / maxScroll));
-    setScrollProgress(rawProgress);
-
-    const bounds = stationElements.map((el, i) => {
+    cachedBounds = stationElements.map((el, i) => {
       if (i === 3 && featuredTrigger) {
         return { start: featuredTrigger.start, end: featuredTrigger.end };
       }
@@ -250,7 +246,15 @@ function bootPortfolio() {
       }
       return { start: top, end: top };
     });
+  }
 
+  function updateCameraAndRailFromScroll() {
+    if (!cachedBounds.length) recomputeStationBounds();
+    const scrollY = window.scrollY || window.pageYOffset || 0;
+    const rawProgress = Math.max(0, Math.min(1, scrollY / cachedMaxScroll));
+    setScrollProgress(rawProgress);
+
+    const bounds = cachedBounds;
     const count = bounds.length;
     let splineT = 0;
 
@@ -290,14 +294,24 @@ function bootPortfolio() {
     setActiveSection(activeIdx);
   }
 
+  recomputeStationBounds();
   window.addEventListener("scroll", updateCameraAndRailFromScroll, { passive: true });
   window.addEventListener("resize", () => {
     if (hasScrollTrigger) window.ScrollTrigger.refresh();
+    recomputeStationBounds();
+    updateCameraAndRailFromScroll();
+  });
+  window.addEventListener("portfolio:projects-updated", () => {
+    if (hasScrollTrigger) window.ScrollTrigger.refresh();
+    recomputeStationBounds();
     updateCameraAndRailFromScroll();
   });
 
   if (hasScrollTrigger) {
-    window.ScrollTrigger.addEventListener("refresh", updateCameraAndRailFromScroll);
+    window.ScrollTrigger.addEventListener("refresh", () => {
+      recomputeStationBounds();
+      updateCameraAndRailFromScroll();
+    });
     window.ScrollTrigger.refresh();
   }
   updateCameraAndRailFromScroll();

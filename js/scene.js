@@ -12,9 +12,9 @@ import {
   HERO_INTRO_START_Z,
   HERO_INTRO_END_Z,
   createCameraRig
-} from "./camera-path.js";
-import { FEATURED_SCREENS, getActiveLang } from "./i18n.js";
-import { getActiveTheme, getThemeSceneColors } from "./theme.js";
+} from "./camera-path.js?v=6";
+import { FEATURED_SCREENS, getActiveLang } from "./i18n.js?v=6";
+import { getActiveTheme, getThemeSceneColors } from "./theme.js?v=6";
 
 const MAC_SCREENSHOT_BASE =
   "https://raw.githubusercontent.com/ibrahimtemur/mac-remote-app/main/screenshots/";
@@ -83,9 +83,10 @@ function composeMacDesktopTexture(sourceImgOrCanvas, lang = "tr", maxAnisotropy 
   const w = 1920;
   const h = 1200;
   const canvas = document.createElement("canvas");
-  canvas.width = w;
-  canvas.height = h;
+  canvas.width = 1280;
+  canvas.height = 800;
   const ctx = canvas.getContext("2d");
+  ctx.scale(1280 / w, 800 / h);
 
   // Petrol-teal macOS wallpaper gradient (strictly matching palette)
   const wp = ctx.createLinearGradient(0, 0, w, h);
@@ -1176,6 +1177,7 @@ function createFlowingLightBridge(initialPalette) {
 function createMacRemoteStage(initialPalette, maxAnisotropy) {
   const group = new THREE.Group();
   group.name = "MacRemoteStage";
+  group.visible = false;
 
   const textureLoader = new THREE.TextureLoader();
   textureLoader.setCrossOrigin("anonymous");
@@ -1773,6 +1775,7 @@ function createPlaceholderStationMarker(station, initialPalette) {
   const group = new THREE.Group();
   group.name = `StationAnchor_${station.id}`;
   group.position.set(station.anchor[0], station.anchor[1], station.anchor[2]);
+  group.visible = false;
 
   // Subtle architectural locator hairline rings so stations 02/03/05/06/07 feel grounded in Phase 1
   const pts = [];
@@ -1810,9 +1813,10 @@ function createPlaceholderStationMarker(station, initialPalette) {
     ringMat,
     innerMat: innerRing.material,
     isWarm: station.index % 2 !== 0,
-    update(time, cameraZ = 0) {
-      const dist = Math.abs(cameraZ - group.position.z);
-      const vis = THREE.MathUtils.smoothstep(13.0 - dist, 0.0, 5.5);
+    update(time, scrollT = 0) {
+      const stationT = station.index / 6;
+      const distT = Math.abs(scrollT - stationT);
+      const vis = THREE.MathUtils.smoothstep(0.085 - distT, 0.0, 0.04);
       group.visible = vis > 0.01;
       if (!group.visible) return;
       ringMat.opacity = 0.34 * vis;
@@ -2163,7 +2167,7 @@ export function initPortfolioScene() {
     macRemoteStage.syncTheme(lerpedColors, currentThemeMix);
 
     placeholderStations.forEach((st) => {
-      st.update(elapsed, camera.position.z);
+      st.update(elapsed, currentScrollT);
       st.syncTheme(lerpedColors);
     });
 

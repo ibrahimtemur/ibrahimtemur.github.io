@@ -204,27 +204,10 @@
     opacity: 1;
   }
 
-  /* Section 06 Contextual Filter Sub-menu inside Rail */
-  .rail-project-filters {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    margin-left: 0.5rem;
-    padding-left: 0.65rem;
-    border-left: 1px solid var(--border-strong);
-    max-width: 0;
-    opacity: 0;
-    overflow: hidden;
-    pointer-events: none;
-    transition:
-      max-width var(--dur-base) var(--ease-out-expo),
-      opacity var(--dur-fast) var(--ease-out-expo);
-  }
-
+  /* Section 06 Contextual Filter Sub-menu inside Rail — disabled to prevent overlap with inline filter tabs */
+  .rail-project-filters,
   .section-rail.is-projects-active .rail-project-filters {
-    max-width: 165px;
-    opacity: 1;
-    pointer-events: auto;
+    display: none !important;
   }
 
   .rail-filter-btn {

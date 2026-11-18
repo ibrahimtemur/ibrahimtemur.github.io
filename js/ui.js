@@ -13,17 +13,17 @@ import {
   t,
   initI18n,
   onLanguageChange
-} from "./i18n.js";
-import { getActiveTheme, getThemeSceneColors, initTheme } from "./theme.js";
+} from "./i18n.js?v=6";
+import { getActiveTheme, getThemeSceneColors, initTheme } from "./theme.js?v=6";
 import {
   EMAIL_ADDRESS,
   SOCIAL_LINKS,
   PROJECTS_DATA,
   getProjects,
   getProjectById
-} from "./projects-data.js";
-import { syncWithGitHubApi, updateGitHubStatusLabel } from "./github.js";
-import { initPalette } from "./palette.js";
+} from "./projects-data.js?v=6";
+import { syncWithGitHubApi, updateGitHubStatusLabel } from "./github.js?v=6";
+import { initPalette } from "./palette.js?v=6";
 
 export { getActiveLang, getThemeSceneColors };
 
@@ -302,11 +302,6 @@ function initScrollObservers() {
 
   const updateScroll = () => {
     const scrollTop = window.scrollY || window.pageYOffset || 0;
-    const maxScroll = Math.max(
-      1,
-      document.documentElement.scrollHeight - window.innerHeight
-    );
-    setScrollProgress(scrollTop / maxScroll);
     brandCorner?.classList.toggle("is-compact", scrollTop > 72);
   };
 
