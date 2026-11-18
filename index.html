@@ -13,7 +13,7 @@
   <meta property="og:url" content="https://ibrahimtemur.github.io/" />
   <meta property="og:title" content="İbrahim Temur — Software Developer &amp; Computer Engineering" />
   <meta property="og:description" content="Cross-Platform Mobile &amp; Desktop (Flutter, SwiftUI, Jetpack Compose, PyQt6), Full-Stack Web (React, ASP.NET Core MVC, Node.js) &amp; IoT/Embedded Systems." />
-  <meta property="og:image" content="https://ibrahimtemur.github.io/avatar.jpg" />
+  <meta property="og:image" content="https://ibrahimtemur.github.io/favicon.png" />
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
@@ -47,10 +47,10 @@
   </script>
 
   <!-- Layered Architecture Stylesheets -->
-  <link rel="stylesheet" href="css/tokens.css?v=6" />
-  <link rel="stylesheet" href="css/base.css?v=6" />
-  <link rel="stylesheet" href="css/components.css?v=6" />
-  <link rel="stylesheet" href="css/sections.css?v=6" />
+  <link rel="stylesheet" href="css/tokens.css?v=7" />
+  <link rel="stylesheet" href="css/base.css?v=7" />
+  <link rel="stylesheet" href="css/components.css?v=7" />
+  <link rel="stylesheet" href="css/sections.css?v=7" />
 </head>
 <body>
   <a href="#scene-hero" class="skip-link">İçeriğe geç</a>
@@ -644,15 +644,8 @@
             </div>
           </div>
 
-          <!-- Right 66% Open 3D Stage Window (+ Screenshot Preview / WebGL Fallback) -->
+          <!-- Right 66% Open 3D Stage Window (+ WebGL Fallback Screenshot Frame) -->
           <div class="featured-stage-window" id="featuredStageWindow">
-            <div class="featured-stage-controls">
-              <button type="button" class="hairline-action" id="featuredPreviewToggle" aria-pressed="false">
-                <i data-lucide="image" style="width:15px;height:15px;"></i>
-                <span>Ekran Görüntüsü</span>
-              </button>
-            </div>
-
             <div class="featured-stage-frame">
               <img
                 id="featuredPreviewImg"
@@ -926,8 +919,8 @@
     }
   </script>
 
-  <!-- Application Entrypoint (Completed in Phase 1B) -->
-  <script type="module" src="js/main.js?v=6"></script>
+  <!-- Application Entrypoint -->
+  <script type="module" src="js/main.js?v=7"></script>
 
   <!-- Graceful Preloader & Fallback Safety Guard -->
   <script>

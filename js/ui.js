@@ -13,17 +13,17 @@ import {
   t,
   initI18n,
   onLanguageChange
-} from "./i18n.js?v=6";
-import { getActiveTheme, getThemeSceneColors, initTheme } from "./theme.js?v=6";
+} from "./i18n.js?v=7";
+import { getActiveTheme, getThemeSceneColors, initTheme } from "./theme.js?v=7";
 import {
   EMAIL_ADDRESS,
   SOCIAL_LINKS,
   PROJECTS_DATA,
   getProjects,
   getProjectById
-} from "./projects-data.js?v=6";
-import { syncWithGitHubApi, updateGitHubStatusLabel } from "./github.js?v=6";
-import { initPalette } from "./palette.js?v=6";
+} from "./projects-data.js?v=7";
+import { syncWithGitHubApi, updateGitHubStatusLabel } from "./github.js?v=7";
+import { initPalette } from "./palette.js?v=7";
 
 export { getActiveLang, getThemeSceneColors };
 

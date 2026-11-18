@@ -4,6 +4,10 @@
 
 @layer reset, base, components, sections;
 
+@view-transition {
+  navigation: auto;
+}
+
 @layer reset {
   *,
   *::before,
