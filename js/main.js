@@ -4,9 +4,9 @@
    GSAP ScrollTrigger Section Spline Mapping & Scene 04 Mac Remote Pinning.
    ========================================================================== */
 
-import { CAMERA_STATIONS } from "./camera-path.js?v=9";
-import { initPortfolioScene } from "./scene.js?v=9";
-import { getActiveTheme } from "./theme.js?v=9";
+import { CAMERA_STATIONS } from "./camera-path.js?v=10";
+import { initPortfolioScene } from "./scene.js?v=10";
+import { getActiveTheme } from "./theme.js?v=10";
 import {
   initUI,
   dismissPreloader,
@@ -14,7 +14,7 @@ import {
   setScrollProgress,
   updateFeaturedScreen,
   getActiveLang
-} from "./ui.js?v=9";
+} from "./ui.js?v=10";
 
 function getDocumentOffsetTop(el) {
   if (!el) return 0;
@@ -228,6 +228,7 @@ function bootPortfolio() {
   let cachedMaxScroll = 1;
 
   function recomputeStationBounds() {
+    const scrollNow = window.scrollY || window.pageYOffset || 0;
     cachedMaxScroll = Math.max(
       1,
       document.documentElement.scrollHeight - window.innerHeight
@@ -239,7 +240,9 @@ function bootPortfolio() {
       const anchorEl = el?.parentElement?.classList?.contains("pin-spacer")
         ? el.parentElement
         : el;
-      const top = getDocumentOffsetTop(anchorEl);
+      const top = anchorEl
+        ? Math.round(anchorEl.getBoundingClientRect().top + scrollNow)
+        : 0;
       if (i === 3 && !featuredTrigger && el) {
         const end = top + Math.max(0, el.offsetHeight - window.innerHeight * 0.7);
         return { start: top, end };

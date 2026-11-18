@@ -674,19 +674,17 @@
   }
 
   .iot-fallback-schematic {
-    display: none;
+    display: block;
     width: 100%;
     max-width: 520px;
-    transition: transform var(--dur-base) var(--ease-out-expo);
-  }
-
-  html.webgl-fallback .iot-fallback-schematic {
-    display: block;
+    transition:
+      transform var(--dur-base) var(--ease-out-expo),
+      filter var(--dur-fast) ease;
   }
 
   .iot-pcb-window[data-iot-active-state="idle"] .iot-pcb-led {
     fill: var(--text-muted);
-    opacity: 0.6;
+    opacity: 0.65;
   }
 
   .iot-pcb-window[data-iot-active-state="heating"] .iot-pcb-led {
@@ -695,7 +693,8 @@
   }
 
   .iot-pcb-window[data-iot-active-state="heating"] .iot-trace-relay {
-    stroke-width: 2.6;
+    stroke-width: 2.8;
+    filter: drop-shadow(0 0 6px var(--accent-secondary));
   }
 
   .iot-pcb-window[data-iot-active-state="brewing"] .iot-pcb-led {
@@ -705,12 +704,13 @@
 
   .iot-pcb-window[data-iot-active-state="brewing"] .iot-trace-adc,
   .iot-pcb-window[data-iot-active-state="brewing"] .iot-trace-relay {
-    stroke-width: 2.6;
+    stroke-width: 2.8;
+    filter: drop-shadow(0 0 6px var(--accent-primary));
   }
 
   .iot-pcb-window[data-iot-active-state="done"] .iot-pcb-led {
     fill: var(--accent-primary);
-    opacity: 0.9;
+    opacity: 0.95;
   }
 
   .iot-machine-col {

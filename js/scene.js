@@ -12,9 +12,9 @@ import {
   HERO_INTRO_START_Z,
   HERO_INTRO_END_Z,
   createCameraRig
-} from "./camera-path.js?v=9";
-import { FEATURED_SCREENS, getActiveLang } from "./i18n.js?v=9";
-import { getActiveTheme, getThemeSceneColors } from "./theme.js?v=9";
+} from "./camera-path.js?v=10";
+import { FEATURED_SCREENS, getActiveLang } from "./i18n.js?v=10";
+import { getActiveTheme, getThemeSceneColors } from "./theme.js?v=10";
 
 const MAC_SCREENSHOT_BASE =
   "https://raw.githubusercontent.com/ibrahimtemur/mac-remote-app/main/screenshots/";
@@ -623,8 +623,10 @@ function createHeroMonolith(initialPalette) {
       uniforms.uPointer.value.set(nx, ny);
       uniforms.uHover.value = hover;
     },
-    update(time, dt, pointerTarget, viewportWidth, _viewportHeight, scrollT = 0) {
-      const heroVis = THREE.MathUtils.smoothstep(0.12 - scrollT, 0.0, 0.055);
+    update(time, dt, pointerTarget, viewportWidth, _viewportHeight, scrollT = 0, isLegal = false) {
+      const heroVis = isLegal
+        ? 1.0 - THREE.MathUtils.smoothstep(scrollT, 0.35, 0.95) * 0.55
+        : THREE.MathUtils.smoothstep(0.12 - scrollT, 0.0, 0.055);
       group.visible = heroVis > 0.005;
       if (!group.visible) return;
 
@@ -634,8 +636,20 @@ function createHeroMonolith(initialPalette) {
       // Compact scale perched cleanly ABOVE "İBRAHİM TEMUR" with zero text overlap
       const isMobile = viewportWidth < 768;
       const targetScale = isMobile ? 0.3 : viewportWidth < 1100 ? 0.4 : 0.46;
-      const targetPosX = isMobile ? 0.0 : pointerTarget.x * 0.1;
-      const targetPosY = isMobile ? 0.92 : 1.24 + pointerTarget.y * 0.06;
+      const targetPosX = isLegal
+        ? viewportWidth >= 1080
+          ? 2.25 + pointerTarget.x * 0.1
+          : 0.0
+        : isMobile
+        ? 0.0
+        : pointerTarget.x * 0.1;
+      const targetPosY = isLegal
+        ? viewportWidth >= 1080
+          ? 1.05 + pointerTarget.y * 0.06
+          : 1.48
+        : isMobile
+        ? 0.92
+        : 1.24 + pointerTarget.y * 0.06;
 
       group.scale.setScalar(
         THREE.MathUtils.lerp(group.scale.x, targetScale, Math.min(1, dt * 6))
@@ -1759,792 +1773,7 @@ function createCorridorAtmosphere(initialPalette) {
 }
 
 /* --------------------------------------------------------------------------
-   6B. BESPOKE 3D INSTALLATIONS FOR STATIONS 02, 03, 05, 06, 07
-   -------------------------------------------------------------------------- */
-function createJourneySplineStage(station, initialPalette) {
-  const group = new THREE.Group();
-  group.name = `Station02_${station.id}`;
-  group.position.set(station.anchor[0], station.anchor[1], station.anchor[2]);
-  group.visible = false;
-
-  const curve = new THREE.CatmullRomCurve3([
-    new THREE.Vector3(-2.15, -1.15, 0.72),
-    new THREE.Vector3(-0.62, -0.32, 0.28),
-    new THREE.Vector3(0.75, 0.42, -0.18),
-    new THREE.Vector3(2.15, 1.15, -0.68)
-  ]);
-
-  const fadeMats = [];
-  const trackMat = new THREE.MeshStandardMaterial({
-    color: new THREE.Color(initialPalette.lightPrimary),
-    emissive: new THREE.Color(initialPalette.lightPrimary),
-    emissiveIntensity: 0.28,
-    metalness: 0.65,
-    roughness: 0.25,
-    transparent: true,
-    opacity: 0.62
-  });
-  fadeMats.push({ mat: trackMat, base: 0.62 });
-  const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 64, 0.018, 10, false), trackMat);
-  group.add(tube);
-
-  const wireCurveMat = new THREE.LineBasicMaterial({
-    color: new THREE.Color(initialPalette.wire),
-    transparent: true,
-    opacity: 0.4
-  });
-  fadeMats.push({ mat: wireCurveMat, base: 0.4 });
-  const haloPts = curve.getPoints(56).map((p) => new THREE.Vector3(p.x, p.y - 0.14, p.z - 0.18));
-  group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(haloPts), wireCurveMat));
-
-  const milestoneNodes = [];
-  [
-    { u: 0.16, warm: false },
-    { u: 0.5, warm: true },
-    { u: 0.84, warm: false }
-  ].forEach((cfg) => {
-    const pos = curve.getPointAt(cfg.u);
-    const nodeGroup = new THREE.Group();
-    nodeGroup.position.copy(pos);
-
-    const coreMat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(cfg.warm ? initialPalette.lightSecondary : initialPalette.lightPrimary),
-      emissive: new THREE.Color(cfg.warm ? initialPalette.lightSecondary : initialPalette.lightPrimary),
-      emissiveIntensity: 0.45,
-      metalness: 0.6,
-      roughness: 0.22,
-      transparent: true,
-      opacity: 0.88
-    });
-    fadeMats.push({ mat: coreMat, base: 0.88 });
-    const core = new THREE.Mesh(new THREE.OctahedronGeometry(0.16, 0), coreMat);
-    nodeGroup.add(core);
-
-    const ringMat = new THREE.LineBasicMaterial({
-      color: new THREE.Color(cfg.warm ? initialPalette.lightSecondary : initialPalette.lightPrimary),
-      transparent: true,
-      opacity: 0.65
-    });
-    fadeMats.push({ mat: ringMat, base: 0.65 });
-    const ringPts = [];
-    for (let i = 0; i < 48; i++) {
-      const a = (i / 48) * Math.PI * 2;
-      ringPts.push(new THREE.Vector3(Math.cos(a) * 0.34, Math.sin(a) * 0.34, 0));
-    }
-    const halo = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(ringPts), ringMat);
-    halo.rotation.set(0.45, cfg.warm ? -0.35 : 0.35, 0);
-    nodeGroup.add(halo);
-
-    group.add(nodeGroup);
-    milestoneNodes.push({ core, halo, coreMat, ringMat, warm: cfg.warm });
-  });
-
-  const beadMat = new THREE.MeshBasicMaterial({
-    color: new THREE.Color(initialPalette.lightSecondary),
-    transparent: true,
-    opacity: 0.92
-  });
-  fadeMats.push({ mat: beadMat, base: 0.92 });
-  const signalBead = new THREE.Mesh(new THREE.SphereGeometry(0.065, 16, 16), beadMat);
-  group.add(signalBead);
-
-  const tmpPos = new THREE.Vector3();
-
-  return {
-    group,
-    update(time, viewportWidth, scrollT = 0) {
-      const distT = Math.abs(scrollT - station.index / 6);
-      const vis = THREE.MathUtils.smoothstep(0.095 - distT, 0.0, 0.045);
-      group.visible = vis > 0.005;
-      if (!group.visible) return;
-
-      const isMobile = viewportWidth < 821;
-      const targetScale = isMobile ? 0.56 : 0.95;
-      group.scale.setScalar(targetScale);
-      group.position.x = isMobile ? station.lookAt[0] : station.anchor[0];
-
-      fadeMats.forEach((f) => {
-        f.mat.opacity = f.base * vis * (isMobile ? 0.72 : 1.0);
-      });
-
-      milestoneNodes.forEach((n, idx) => {
-        n.core.rotation.y = time * 0.65 + idx * 1.1;
-        n.halo.rotation.z = time * (idx % 2 === 0 ? 0.35 : -0.35);
-      });
-
-      const u = ((time * 0.14) % 1 + 1) % 1;
-      curve.getPointAt(u, tmpPos);
-      signalBead.position.copy(tmpPos);
-    },
-    syncTheme(lerpedColors) {
-      trackMat.color.copy(lerpedColors.primary);
-      trackMat.emissive.copy(lerpedColors.primary);
-      wireCurveMat.color.copy(lerpedColors.wire);
-      beadMat.color.copy(lerpedColors.secondary);
-      milestoneNodes.forEach((n) => {
-        const c = n.warm ? lerpedColors.secondary : lerpedColors.primary;
-        n.coreMat.color.copy(c);
-        n.coreMat.emissive.copy(c);
-        n.ringMat.color.copy(c);
-      });
-    }
-  };
-}
-
-function createSkillsConstellationStage(station, initialPalette) {
-  const group = new THREE.Group();
-  group.name = `Station03_${station.id}`;
-  group.position.set(station.anchor[0], station.anchor[1], station.anchor[2]);
-  group.visible = false;
-
-  const fadeMats = [];
-  const islandSpecs = [
-    { pos: [-2.95, 0.85, 1.55], warm: false },
-    { pos: [2.95, 0.88, 0.25], warm: false },
-    { pos: [-2.85, -0.88, -0.95], warm: false },
-    { pos: [2.88, -0.82, -2.25], warm: true }
-  ];
-
-  const islands = islandSpecs.map((spec, idx) => {
-    const ig = new THREE.Group();
-    ig.position.set(spec.pos[0], spec.pos[1], spec.pos[2]);
-
-    const hexPts = [];
-    for (let i = 0; i < 6; i++) {
-      const a = (i / 6) * Math.PI * 2;
-      hexPts.push(new THREE.Vector3(Math.cos(a) * 0.85, 0, Math.sin(a) * 0.85));
-    }
-    const rimMat = new THREE.LineBasicMaterial({
-      color: new THREE.Color(spec.warm ? initialPalette.lightSecondary : initialPalette.lightPrimary),
-      transparent: true,
-      opacity: 0.72
-    });
-    fadeMats.push({ mat: rimMat, base: 0.72 });
-    const outerRim = new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(hexPts), rimMat);
-    outerRim.rotation.x = 0.28;
-    ig.add(outerRim);
-
-    const slabMat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(spec.warm ? initialPalette.lightSecondary : initialPalette.lightPrimary),
-      emissive: new THREE.Color(spec.warm ? initialPalette.lightSecondary : initialPalette.lightPrimary),
-      emissiveIntensity: 0.24,
-      metalness: 0.45,
-      roughness: 0.35,
-      transparent: true,
-      opacity: 0.32
-    });
-    fadeMats.push({ mat: slabMat, base: 0.32 });
-    const slab = new THREE.Mesh(new THREE.CylinderGeometry(0.72, 0.56, 0.14, 6), slabMat);
-    slab.rotation.x = 0.28;
-    ig.add(slab);
-
-    const satNode = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.16, 0.16), rimMat);
-    satNode.position.set(0.58, 0.34, 0.1);
-    ig.add(satNode);
-
-    group.add(ig);
-    return { ig, slab, satNode, rimMat, slabMat, basePos: spec.pos, warm: spec.warm, idx };
-  });
-
-  // Inter-island data filaments crossing the canyon cleanly at depth
-  const filamentMat = new THREE.LineBasicMaterial({
-    color: new THREE.Color(initialPalette.wire),
-    transparent: true,
-    opacity: 0.42
-  });
-  fadeMats.push({ mat: filamentMat, base: 0.42 });
-  [
-    [0, 1],
-    [1, 3],
-    [0, 2],
-    [2, 3],
-    [1, 2]
-  ].forEach(([aIdx, bIdx]) => {
-    const a = islandSpecs[aIdx].pos;
-    const b = islandSpecs[bIdx].pos;
-    const mid = [(a[0] + b[0]) * 0.5, (a[1] + b[1]) * 0.5 + 0.15, (a[2] + b[2]) * 0.5 - 0.55];
-    const lineCurve = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(...a),
-      new THREE.Vector3(...mid),
-      new THREE.Vector3(...b)
-    ]);
-    group.add(
-      new THREE.Line(new THREE.BufferGeometry().setFromPoints(lineCurve.getPoints(28)), filamentMat)
-    );
-  });
-
-  return {
-    group,
-    update(time, viewportWidth, scrollT = 0) {
-      const stationT = station.index / 6;
-      const distT = Math.abs(scrollT - stationT);
-      const vis = THREE.MathUtils.smoothstep(0.095 - distT, 0.0, 0.045);
-      group.visible = vis > 0.005;
-      if (!group.visible) return;
-
-      const isMobile = viewportWidth < 821;
-      const xSpread = isMobile ? 0.42 : viewportWidth < 1100 ? 0.76 : 1.0;
-      const scaleVal = isMobile ? 0.64 : 1.0;
-      const relScroll = (scrollT - stationT) * 14.0;
-
-      group.scale.setScalar(scaleVal);
-      fadeMats.forEach((f) => {
-        f.mat.opacity = f.base * vis * (isMobile ? 0.72 : 1.0);
-      });
-
-      islands.forEach((item) => {
-        item.ig.position.x = item.basePos[0] * xSpread;
-        item.ig.position.y = item.basePos[1] + Math.sin(time * 0.8 + item.idx * 1.4) * 0.12;
-        item.ig.position.z = item.basePos[2] + relScroll * 0.45;
-        item.slab.rotation.y = time * 0.25 + item.idx;
-        item.satNode.position.x = Math.cos(time * 0.9 + item.idx) * 0.62;
-        item.satNode.position.z = Math.sin(time * 0.9 + item.idx) * 0.62;
-      });
-    },
-    syncTheme(lerpedColors) {
-      filamentMat.color.copy(lerpedColors.wire);
-      islands.forEach((item) => {
-        const col = item.warm ? lerpedColors.secondary : lerpedColors.primary;
-        item.rimMat.color.copy(col);
-        item.slabMat.color.copy(col);
-        item.slabMat.emissive.copy(col);
-      });
-    }
-  };
-}
-
-function createIotPcbStage(station, initialPalette) {
-  const group = new THREE.Group();
-  group.name = `Station05_${station.id}`;
-  group.position.set(station.anchor[0], station.anchor[1], station.anchor[2]);
-  group.visible = false;
-
-  const boardAssembly = new THREE.Group();
-  boardAssembly.rotation.set(0.32, 0.44, -0.05);
-  group.add(boardAssembly);
-
-  const fadeMats = [];
-  const addFade = (mat, baseOpacity) => {
-    mat.transparent = true;
-    mat.opacity = baseOpacity;
-    fadeMats.push({ mat, baseOpacity });
-    return mat;
-  };
-
-  // Custom high-resolution PCB silkscreen & etched copper traces texture
-  const pcbCanvas = document.createElement("canvas");
-  pcbCanvas.width = 1024;
-  pcbCanvas.height = 640;
-  const ctx = pcbCanvas.getContext("2d");
-
-  const boardBg = ctx.createLinearGradient(0, 0, 1024, 640);
-  boardBg.addColorStop(0, "#0A181D");
-  boardBg.addColorStop(1, "#122930");
-  ctx.fillStyle = boardBg;
-  ctx.fillRect(0, 0, 1024, 640);
-
-  // Etched subtle coordinate silkscreen border
-  ctx.strokeStyle = "rgba(60, 207, 192, 0.35)";
-  ctx.lineWidth = 4;
-  drawRoundedRectPath(ctx, 22, 22, 980, 596, 26);
-  ctx.stroke();
-
-  // Wi-Fi PCB meander antenna trace top-left
-  ctx.strokeStyle = "#F2A65A";
-  ctx.lineWidth = 5;
-  ctx.beginPath();
-  ctx.moveTo(92, 248);
-  ctx.lineTo(92, 130);
-  for (let i = 0; i < 5; i++) {
-    const x = 92 + i * 28;
-    ctx.lineTo(x + 14, 130);
-    ctx.lineTo(x + 14, 178);
-    ctx.lineTo(x + 28, 178);
-    ctx.lineTo(x + 28, 130);
-  }
-  ctx.stroke();
-
-  // Etched Copper Traces linking ESP32 -> 64x ADC -> Relay Stage
-  ctx.strokeStyle = "rgba(60, 207, 192, 0.52)";
-  ctx.lineWidth = 5;
-  ctx.beginPath();
-  ctx.moveTo(410, 260);
-  ctx.lineTo(540, 260);
-  ctx.lineTo(575, 220);
-  ctx.lineTo(665, 220);
-  ctx.moveTo(410, 295);
-  ctx.lineTo(530, 295);
-  ctx.lineTo(565, 255);
-  ctx.lineTo(665, 255);
-  ctx.stroke();
-
-  ctx.strokeStyle = "rgba(242, 166, 90, 0.55)";
-  ctx.lineWidth = 6;
-  ctx.beginPath();
-  ctx.moveTo(410, 390);
-  ctx.lineTo(555, 390);
-  ctx.lineTo(595, 435);
-  ctx.lineTo(675, 435);
-  ctx.stroke();
-
-  // Silkscreen real hardware labels only
-  ctx.fillStyle = "rgba(242, 245, 244, 0.85)";
-  ctx.font = "700 22px Inter, -apple-system, sans-serif";
-  ctx.fillText("ESP32 · ESP8266", 190, 520);
-  ctx.fillStyle = "#3CCFC0";
-  ctx.font = "700 20px Inter, -apple-system, sans-serif";
-  ctx.fillText("64x ADC PIPELINE", 665, 168);
-  ctx.fillStyle = "#F2A65A";
-  ctx.fillText("WI-FI RELAY", 675, 535);
-
-  const pcbTex = new THREE.CanvasTexture(pcbCanvas);
-  pcbTex.colorSpace = THREE.SRGBColorSpace;
-  pcbTex.anisotropy = 4;
-
-  // Main Extruded Fiberglass PCB Board
-  const boardShape = createRoundedRectShape(3.65, 2.28, 0.16);
-  const boardGeo = new THREE.ExtrudeGeometry(boardShape, {
-    depth: 0.08,
-    bevelEnabled: true,
-    bevelThickness: 0.014,
-    bevelSize: 0.014,
-    bevelSegments: 3
-  });
-  boardGeo.translate(0, 0, -0.04);
-
-  const boardBodyMat = addFade(
-    new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color("#102228"),
-      metalness: 0.45,
-      roughness: 0.36,
-      clearcoat: 0.35
-    }),
-    0.98
-  );
-  boardAssembly.add(new THREE.Mesh(boardGeo, boardBodyMat));
-
-  const surfaceMat = addFade(new THREE.MeshBasicMaterial({ map: pcbTex }), 1.0);
-  const surfacePlane = new THREE.Mesh(new THREE.PlaneGeometry(3.55, 2.2), surfaceMat);
-  surfacePlane.position.z = 0.056;
-  boardAssembly.add(surfacePlane);
-
-  // Outer copper rim hairline
-  const rimPts = createRoundedBorderPoints(3.68, 2.31, 0.16, 0.058, 10);
-  const pcbRimMat = addFade(
-    new THREE.LineBasicMaterial({ color: new THREE.Color(initialPalette.lightPrimary) }),
-    0.72
-  );
-  boardAssembly.add(new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(rimPts), pcbRimMat));
-
-  // Brushed metallic ESP32-WROOM Shield Can on left-center
-  const canMat = addFade(
-    new THREE.MeshStandardMaterial({
-      color: new THREE.Color("#B8C7C9"),
-      metalness: 0.85,
-      roughness: 0.25
-    }),
-    0.96
-  );
-  const espCan = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.92, 0.16), canMat);
-  espCan.position.set(-0.62, -0.02, 0.13);
-  boardAssembly.add(espCan);
-
-  // Gold Header Pin Arrays (Top + Bottom rows)
-  const goldPinMat = addFade(
-    new THREE.MeshStandardMaterial({
-      color: new THREE.Color("#F2A65A"),
-      metalness: 0.9,
-      roughness: 0.22
-    }),
-    0.95
-  );
-  for (let p = 0; p < 8; p++) {
-    const px = -1.1 + p * 0.14;
-    [-0.78, 0.78].forEach((py) => {
-      const pin = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.055, 0.12), goldPinMat);
-      pin.position.set(px, py, 0.11);
-      boardAssembly.add(pin);
-    });
-  }
-
-  // ADC Divider Stage Resistors / Capacitors (upper-right)
-  const adcBodyMat = addFade(
-    new THREE.MeshStandardMaterial({
-      color: new THREE.Color("#1A3A44"),
-      emissive: new THREE.Color(initialPalette.lightPrimary),
-      emissiveIntensity: 0.22,
-      metalness: 0.5,
-      roughness: 0.3
-    }),
-    0.95
-  );
-  const adcBlock = new THREE.Mesh(new THREE.BoxGeometry(0.72, 0.44, 0.14), adcBodyMat);
-  adcBlock.position.set(0.95, 0.42, 0.12);
-  boardAssembly.add(adcBlock);
-
-  [0.28, 0.56].forEach((ry) => {
-    const res = new THREE.Mesh(new THREE.CylinderGeometry(0.042, 0.042, 0.32, 12), goldPinMat);
-    res.rotation.z = Math.PI * 0.5;
-    res.position.set(0.32, ry, 0.1);
-    boardAssembly.add(res);
-  });
-
-  // 5V Power Relay Module (lower-right)
-  const relayMat = addFade(
-    new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color("#0E8F86"),
-      emissive: new THREE.Color("#0E8F86"),
-      emissiveIntensity: 0.2,
-      metalness: 0.3,
-      roughness: 0.32,
-      clearcoat: 0.45
-    }),
-    0.96
-  );
-  const relayCube = new THREE.Mesh(new THREE.BoxGeometry(0.76, 0.58, 0.34), relayMat);
-  relayCube.position.set(0.96, -0.44, 0.22);
-  boardAssembly.add(relayCube);
-
-  // Live Interactive Status LED + Glow Aura (driven by IDLE / HEATING / BREWING / DONE)
-  const ledColor = new THREE.Color(initialPalette.lightPrimary);
-  const targetLedColor = new THREE.Color(initialPalette.lightPrimary);
-  const ledMat = addFade(
-    new THREE.MeshStandardMaterial({
-      color: ledColor.clone(),
-      emissive: ledColor.clone(),
-      emissiveIntensity: 1.4,
-      roughness: 0.18
-    }),
-    1.0
-  );
-  const statusLed = new THREE.Mesh(new THREE.SphereGeometry(0.088, 16, 16), ledMat);
-  statusLed.position.set(-0.08, 0.55, 0.12);
-  boardAssembly.add(statusLed);
-
-  const haloMat = addFade(
-    new THREE.MeshBasicMaterial({ color: ledColor.clone(), depthWrite: false }),
-    0.34
-  );
-  const ledHalo = new THREE.Mesh(new THREE.SphereGeometry(0.24, 16, 16), haloMat);
-  ledHalo.position.copy(statusLed.position);
-  boardAssembly.add(ledHalo);
-
-  // Flowing current pulse dots traveling along PCB copper traces
-  const pulseCount = 8;
-  const tracePtsA = [
-    new THREE.Vector3(-0.15, 0.18, 0.08),
-    new THREE.Vector3(0.3, 0.18, 0.08),
-    new THREE.Vector3(0.52, 0.42, 0.08),
-    new THREE.Vector3(0.95, 0.42, 0.16)
-  ];
-  const tracePtsB = [
-    new THREE.Vector3(-0.15, -0.22, 0.08),
-    new THREE.Vector3(0.38, -0.22, 0.08),
-    new THREE.Vector3(0.58, -0.44, 0.08),
-    new THREE.Vector3(0.96, -0.44, 0.18)
-  ];
-  const curveA = new THREE.CatmullRomCurve3(tracePtsA);
-  const curveB = new THREE.CatmullRomCurve3(tracePtsB);
-  const traceDotMat = addFade(
-    new THREE.MeshBasicMaterial({ color: new THREE.Color(initialPalette.lightSecondary) }),
-    0.9
-  );
-  const traceDots = [];
-  for (let i = 0; i < pulseCount; i++) {
-    const dot = new THREE.Mesh(new THREE.SphereGeometry(0.042, 10, 10), traceDotMat);
-    boardAssembly.add(dot);
-    traceDots.push({ dot, curve: i % 2 === 0 ? curveA : curveB, offset: i / pulseCount });
-  }
-
-  let activeState = "idle";
-  let pulseSpeed = 0.35;
-  let targetPulseSpeed = 0.35;
-  const tmpDotPos = new THREE.Vector3();
-  const stateColors = {
-    idle: "#78B8B3",
-    heating: "#F2A65A",
-    brewing: "#3CCFC0",
-    done: "#3CCFC0"
-  };
-
-  return {
-    group,
-    setState(stateKey) {
-      const next = stateColors[stateKey] ? stateKey : "idle";
-      activeState = next;
-      targetLedColor.set(stateColors[next]);
-      targetPulseSpeed =
-        next === "brewing" ? 1.45 : next === "heating" ? 1.05 : next === "done" ? 0.55 : 0.32;
-    },
-    update(time, dt, pointerTarget, viewportWidth, scrollT = 0) {
-      const distT = Math.abs(scrollT - station.index / 6);
-      const vis = THREE.MathUtils.smoothstep(0.095 - distT, 0.0, 0.045);
-      group.visible = vis > 0.005;
-      if (!group.visible) return;
-
-      const isStacked = viewportWidth < 821;
-      const isCompact = viewportWidth < 600;
-      const targetX = isStacked ? station.lookAt[0] : -5.88;
-      const targetY = isCompact ? -1.55 : isStacked ? -1.35 : -0.95;
-      const targetScale = isCompact ? 0.5 : isStacked ? 0.62 : viewportWidth < 1200 ? 0.78 : 0.92;
-
-      group.position.x = THREE.MathUtils.lerp(group.position.x, targetX, Math.min(1, dt * 5));
-      group.position.y = THREE.MathUtils.lerp(group.position.y, targetY, Math.min(1, dt * 5));
-      group.scale.setScalar(THREE.MathUtils.lerp(group.scale.x, targetScale, Math.min(1, dt * 5)));
-
-      ledColor.lerp(targetLedColor, Math.min(1, dt * 6));
-      pulseSpeed = THREE.MathUtils.lerp(pulseSpeed, targetPulseSpeed, Math.min(1, dt * 4));
-
-      ledMat.color.copy(ledColor);
-      ledMat.emissive.copy(ledColor);
-      haloMat.color.copy(ledColor);
-      traceDotMat.color.copy(ledColor);
-
-      const blinkFreq = activeState === "brewing" ? 6.0 : activeState === "heating" ? 3.5 : 1.4;
-      const blink = 0.72 + 0.28 * Math.sin(time * blinkFreq);
-      ledMat.emissiveIntensity = (activeState === "idle" ? 0.75 : 1.75) * blink;
-
-      fadeMats.forEach((f) => {
-        if (f.mat === haloMat) {
-          f.mat.opacity = (activeState === "idle" ? 0.16 : 0.42) * blink * vis;
-        } else {
-          f.mat.opacity = f.baseOpacity * vis;
-        }
-      });
-
-      boardAssembly.rotation.x = 0.32 - pointerTarget.y * 0.08;
-      boardAssembly.rotation.y = 0.44 + Math.sin(time * 0.45) * 0.06 + pointerTarget.x * 0.12;
-      boardAssembly.position.y = Math.sin(time * 1.1) * 0.04;
-
-      traceDots.forEach((d) => {
-        const u = ((time * pulseSpeed + d.offset) % 1 + 1) % 1;
-        d.curve.getPointAt(u, tmpDotPos);
-        d.dot.position.copy(tmpDotPos);
-      });
-    },
-    syncTheme(lerpedColors) {
-      pcbRimMat.color.copy(lerpedColors.primary);
-      adcBodyMat.emissive.copy(lerpedColors.primary);
-      if (activeState === "heating") {
-        targetLedColor.copy(lerpedColors.secondary);
-      } else if (activeState === "idle") {
-        targetLedColor.lerpColors(lerpedColors.wire, lerpedColors.primary, 0.45);
-      } else {
-        targetLedColor.copy(lerpedColors.primary);
-      }
-    }
-  };
-}
-
-function createProjectsGalleryStage(station, initialPalette) {
-  const group = new THREE.Group();
-  group.name = `Station06_${station.id}`;
-  group.position.set(station.anchor[0], station.anchor[1] + 1.05, station.anchor[2] - 2.0);
-  group.visible = false;
-
-  const fadeMats = [];
-  const frames = [];
-  const frameCount = 6;
-  const spanWidth = 7.4;
-
-  for (let i = 0; i < frameCount; i++) {
-    const x = -spanWidth * 0.5 + (i / (frameCount - 1)) * spanWidth;
-    const isWarm = i % 3 === 2;
-    const fg = new THREE.Group();
-    const baseZ = -Math.abs(i - 2.5) * 0.28;
-    fg.position.set(x, 0, baseZ);
-
-    const pts = createRoundedBorderPoints(1.08, 1.48, 0.08, 0, 8);
-    const rimMat = new THREE.LineBasicMaterial({
-      color: new THREE.Color(isWarm ? initialPalette.lightSecondary : initialPalette.lightPrimary),
-      transparent: true,
-      opacity: 0.42
-    });
-    fadeMats.push({ mat: rimMat, base: 0.42, isFrameRim: true, idx: i });
-    fg.add(new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(pts), rimMat));
-
-    const paneMat = new THREE.MeshBasicMaterial({
-      color: new THREE.Color(isWarm ? initialPalette.lightSecondary : initialPalette.lightPrimary),
-      transparent: true,
-      opacity: 0.05,
-      depthWrite: false
-    });
-    fadeMats.push({ mat: paneMat, base: 0.05, idx: i });
-    fg.add(new THREE.Mesh(new THREE.PlaneGeometry(1.02, 1.42), paneMat));
-
-    group.add(fg);
-    frames.push({ fg, rimMat, paneMat, baseX: x, baseZ, isWarm, idx: i });
-  }
-
-  const trackLineMat = new THREE.LineBasicMaterial({
-    color: new THREE.Color(initialPalette.wire),
-    transparent: true,
-    opacity: 0.45
-  });
-  fadeMats.push({ mat: trackLineMat, base: 0.45 });
-  const trackLine = new THREE.Line(
-    new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(-spanWidth * 0.62, -0.92, -0.4),
-      new THREE.Vector3(spanWidth * 0.62, -0.92, -0.4)
-    ]),
-    trackLineMat
-  );
-  group.add(trackLine);
-
-  let highlightedIndex = 0;
-
-  return {
-    group,
-    pulseHover(proj) {
-      if (!proj) return;
-      const hashSeed = String(proj.id || proj.name || "")
-        .split("")
-        .reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
-      highlightedIndex = hashSeed % frameCount;
-    },
-    update(time, dt, viewportWidth, scrollT = 0) {
-      const distT = Math.abs(scrollT - station.index / 6);
-      const vis = THREE.MathUtils.smoothstep(0.095 - distT, 0.0, 0.045);
-      group.visible = vis > 0.005;
-      if (!group.visible) return;
-
-      group.scale.setScalar(viewportWidth < 768 ? 0.56 : 0.96);
-
-      fadeMats.forEach((f) => {
-        if (f.idx !== undefined) {
-          const activeBoost = f.idx === highlightedIndex ? 1.85 : 0.85;
-          f.mat.opacity = Math.min(0.95, f.base * activeBoost) * vis;
-        } else {
-          f.mat.opacity = f.base * vis;
-        }
-      });
-
-      frames.forEach((f) => {
-        const isActive = f.idx === highlightedIndex;
-        const targetZ = f.baseZ + (isActive ? 0.55 : 0.0);
-        f.fg.position.z = THREE.MathUtils.lerp(f.fg.position.z, targetZ, Math.min(1, dt * 6));
-        f.fg.position.y = Math.sin(time * 0.85 + f.idx * 0.7) * 0.07;
-        f.fg.rotation.y = (f.baseX / spanWidth) * -0.25;
-      });
-    },
-    syncTheme(lerpedColors) {
-      trackLineMat.color.copy(lerpedColors.wire);
-      frames.forEach((f) => {
-        const col = f.isWarm ? lerpedColors.secondary : lerpedColors.primary;
-        f.rimMat.color.copy(col);
-        f.paneMat.color.copy(col);
-      });
-    }
-  };
-}
-
-function createContactHorizonStage(station, initialPalette) {
-  const group = new THREE.Group();
-  group.name = `Station07_${station.id}`;
-  group.position.set(station.anchor[0], station.anchor[1] - 1.5, station.anchor[2] - 1.0);
-  group.visible = false;
-
-  const cols = 48;
-  const rows = 18;
-  const count = cols * rows;
-  const positions = new Float32Array(count * 3);
-  const mixVals = new Float32Array(count);
-
-  let ptr = 0;
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols; c++) {
-      const u = c / (cols - 1) - 0.5;
-      const v = r / (rows - 1) - 0.5;
-      positions[ptr * 3] = u * 11.5;
-      positions[ptr * 3 + 1] = 0;
-      positions[ptr * 3 + 2] = v * 4.5;
-      mixVals[ptr] = c / (cols - 1);
-      ptr++;
-    }
-  }
-
-  const geo = new THREE.BufferGeometry();
-  geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  geo.setAttribute("aMix", new THREE.BufferAttribute(mixVals, 1));
-
-  const uniforms = {
-    uTime: { value: 0 },
-    uPixelRatio: { value: Math.min(window.devicePixelRatio || 1, 2) },
-    uPrimaryColor: { value: new THREE.Color(initialPalette.lightPrimary) },
-    uSecondaryColor: { value: new THREE.Color(initialPalette.lightSecondary) },
-    uVisibility: { value: 0 }
-  };
-
-  const waveMat = new THREE.ShaderMaterial({
-    uniforms,
-    transparent: true,
-    depthWrite: false,
-    vertexShader: /* glsl */ `
-      attribute float aMix;
-      uniform float uTime;
-      uniform float uPixelRatio;
-      varying float vMix;
-      void main() {
-        vMix = aMix;
-        vec3 p = position;
-        p.y += sin(p.x * 0.85 + uTime * 0.9) * 0.16 + cos(p.z * 1.15 - uTime * 0.65) * 0.12;
-        vec4 mv = modelViewMatrix * vec4(p, 1.0);
-        gl_PointSize = clamp((11.0 * uPixelRatio) / max(1.5, -mv.z * 0.42), 2.0, 14.0);
-        gl_Position = projectionMatrix * mv;
-      }
-    `,
-    fragmentShader: /* glsl */ `
-      uniform vec3 uPrimaryColor;
-      uniform vec3 uSecondaryColor;
-      uniform float uVisibility;
-      varying float vMix;
-      void main() {
-        float d = length(gl_PointCoord - 0.5);
-        float soft = smoothstep(0.5, 0.05, d);
-        if (soft < 0.01 || uVisibility < 0.01) discard;
-        vec3 col = mix(uPrimaryColor, uSecondaryColor, vMix);
-        gl_FragColor = vec4(col, soft * 0.68 * uVisibility);
-        #include <colorspace_fragment>
-      }
-    `
-  });
-
-  group.add(new THREE.Points(geo, waveMat));
-
-  const horizonPts = [];
-  for (let i = 0; i <= 64; i++) {
-    const t = i / 64 - 0.5;
-    horizonPts.push(new THREE.Vector3(t * 11.2, 0.18, -2.1 + Math.pow(t, 2) * 1.4));
-  }
-  const horizonMat = new THREE.LineBasicMaterial({
-    color: new THREE.Color(initialPalette.wire),
-    transparent: true,
-    opacity: 0.45
-  });
-  group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(horizonPts), horizonMat));
-
-  return {
-    group,
-    waveMat,
-    update(time, scrollT = 0) {
-      const distT = Math.abs(scrollT - 1.0);
-      const vis = THREE.MathUtils.smoothstep(0.105 - distT, 0.0, 0.05);
-      group.visible = vis > 0.005;
-      if (!group.visible) return;
-      uniforms.uTime.value = time;
-      uniforms.uVisibility.value = vis;
-      horizonMat.opacity = 0.45 * vis;
-    },
-    syncTheme(lerpedColors) {
-      uniforms.uPrimaryColor.value.copy(lerpedColors.primary);
-      uniforms.uSecondaryColor.value.copy(lerpedColors.secondary);
-      horizonMat.color.copy(lerpedColors.wire);
-    }
-  };
-}
-
-/* --------------------------------------------------------------------------
-   7. MASTER SCENE CONTROLLER EXPORT
+   7. MASTER SCENE CONTROLLER EXPORT (HERO + MAC REMOTE + ATMOSPHERE)
    -------------------------------------------------------------------------- */
 function createFallbackController() {
   applyWebglFallbackClass();
@@ -2565,7 +1794,12 @@ function createFallbackController() {
   };
 }
 
-export function initPortfolioScene() {
+export function initLegalScene() {
+  return initPortfolioScene({ mode: "legal" });
+}
+
+export function initPortfolioScene(options = {}) {
+  const isLegalMode = options?.mode === "legal";
   const canvas = document.getElementById("webgl-canvas");
   const urlParams =
     typeof window !== "undefined"
@@ -2679,7 +1913,7 @@ export function initPortfolioScene() {
   // Build Stations
   const stationGroups = new Map();
 
-  // Station 01 — Hero Orbital Gyroscope
+  // Station 01 — Compact Beveled </> Software Emblem
   const heroMonolith = createHeroMonolith(initialPalette);
   heroMonolith.group.position.set(
     CAMERA_STATIONS[0].anchor[0],
@@ -2689,40 +1923,19 @@ export function initPortfolioScene() {
   scene.add(heroMonolith.group);
   stationGroups.set("scene-hero", heroMonolith.group);
 
-  // Station 04 — Mac Remote Pinned 3D Stage
-  const macRemoteStage = createMacRemoteStage(initialPalette, maxAnisotropy);
-  macRemoteStage.group.position.set(
-    CAMERA_STATIONS[3].anchor[0],
-    CAMERA_STATIONS[3].anchor[1],
-    CAMERA_STATIONS[3].anchor[2]
-  );
-  scene.add(macRemoteStage.group);
-  stationGroups.set("scene-featured", macRemoteStage.group);
-
-  // Station 02 — Journey Ascending Spline
-  const journeyStage = createJourneySplineStage(CAMERA_STATIONS[1], initialPalette);
-  scene.add(journeyStage.group);
-  stationGroups.set("scene-journey", journeyStage.group);
-
-  // Station 03 — Skills 4-Island Constellation Canyon
-  const skillsStage = createSkillsConstellationStage(CAMERA_STATIONS[2], initialPalette);
-  scene.add(skillsStage.group);
-  stationGroups.set("scene-skills", skillsStage.group);
-
-  // Station 05 — Interactive Procedural ESP32/ADC/Relay PCB
-  const iotStage = createIotPcbStage(CAMERA_STATIONS[4], initialPalette);
-  scene.add(iotStage.group);
-  stationGroups.set("scene-iot", iotStage.group);
-
-  // Station 06 — Projects Architectural Aperture Corridor
-  const projectsStage = createProjectsGalleryStage(CAMERA_STATIONS[5], initialPalette);
-  scene.add(projectsStage.group);
-  stationGroups.set("scene-projects", projectsStage.group);
-
-  // Station 07 — Calm Contact Horizon Point-Wave Grid
-  const contactStage = createContactHorizonStage(CAMERA_STATIONS[6], initialPalette);
-  scene.add(contactStage.group);
-  stationGroups.set("scene-contact", contactStage.group);
+  // Station 04 — Mac Remote Pinned 3D Stage (Portfolio only)
+  const macRemoteStage = isLegalMode
+    ? null
+    : createMacRemoteStage(initialPalette, maxAnisotropy);
+  if (macRemoteStage) {
+    macRemoteStage.group.position.set(
+      CAMERA_STATIONS[3].anchor[0],
+      CAMERA_STATIONS[3].anchor[1],
+      CAMERA_STATIONS[3].anchor[2]
+    );
+    scene.add(macRemoteStage.group);
+    stationGroups.set("scene-featured", macRemoteStage.group);
+  }
 
   // Corridor Atmospheric Depth Particles
   const atmosphere = createCorridorAtmosphere(initialPalette);
@@ -2766,8 +1979,7 @@ export function initPortfolioScene() {
     camera.aspect = viewportWidth / Math.max(1, viewportHeight);
     camera.updateProjectionMatrix();
     heroMonolith.sparkMat.uniforms.uPixelRatio.value = nextDpr;
-    macRemoteStage.setPixelRatio(nextDpr);
-    contactStage.waveMat.uniforms.uPixelRatio.value = nextDpr;
+    if (macRemoteStage) macRemoteStage.setPixelRatio(nextDpr);
     atmosphere.points.material.uniforms.uPixelRatio.value = nextDpr;
   }
 
@@ -2852,60 +2064,57 @@ export function initPortfolioScene() {
     primaryAccentLight.color.copy(lerpedColors.primary);
     secondaryAccentLight.color.copy(lerpedColors.secondary);
 
-    // Sample 7-station spline camera + apply Hero intro glide & Station 04 step focus
-    cameraRig.sampleAt(currentScrollT, sampledPos, sampledLook);
+    if (isLegalMode) {
+      camera.position.set(
+        pointerSmoothed.x * 0.14,
+        0.16 + pointerSmoothed.y * 0.08 - currentScrollT * 0.35,
+        6.2 - currentScrollT * 2.4
+      );
+      finalLookTarget.set(0, 0.08 - currentScrollT * 0.55, 0);
+      camera.lookAt(finalLookTarget);
+    } else {
+      // Sample 7-station spline camera + apply Hero intro glide & Station 04 step focus
+      cameraRig.sampleAt(currentScrollT, sampledPos, sampledLook);
 
-    // Intro zoom glide affects camera Z smoothly near Hero (scrollT ~ 0)
-    const heroWeight = Math.max(0, 1 - currentScrollT * 6.0);
-    const easedIntro = 1 - Math.pow(1 - Math.max(0, Math.min(1, introProgress)), 3);
-    const introZOffset = (HERO_INTRO_START_Z - HERO_INTRO_END_Z) * (1 - easedIntro) * heroWeight;
+      const heroWeight = Math.max(0, 1 - currentScrollT * 6.0);
+      const easedIntro = 1 - Math.pow(1 - Math.max(0, Math.min(1, introProgress)), 3);
+      const introZOffset = (HERO_INTRO_START_Z - HERO_INTRO_END_Z) * (1 - easedIntro) * heroWeight;
 
-    // Station 04 step offset fades smoothly as camera enters/exits Station 04 (t = 0.5)
-    const featuredDist = Math.abs(currentScrollT - 0.5);
-    const featuredWeight = THREE.MathUtils.smoothstep(0.14 - featuredDist, 0.0, 0.14);
-    macRemoteStage.getCameraStepOffset(stepCamOffset, stepLookOffset, viewportWidth);
-    currentStepCamOffset.lerp(stepCamOffset, Math.min(1, dt * 4.5));
-    currentStepLookOffset.lerp(stepLookOffset, Math.min(1, dt * 4.5));
+      const featuredDist = Math.abs(currentScrollT - 0.5);
+      const featuredWeight = THREE.MathUtils.smoothstep(0.14 - featuredDist, 0.0, 0.14);
+      if (macRemoteStage) {
+        macRemoteStage.getCameraStepOffset(stepCamOffset, stepLookOffset, viewportWidth);
+      }
+      currentStepCamOffset.lerp(stepCamOffset, Math.min(1, dt * 4.5));
+      currentStepLookOffset.lerp(stepLookOffset, Math.min(1, dt * 4.5));
 
-    camera.position.set(
-      sampledPos.x + currentStepCamOffset.x * featuredWeight + pointerSmoothed.x * 0.14,
-      sampledPos.y + currentStepCamOffset.y * featuredWeight + pointerSmoothed.y * 0.08,
-      sampledPos.z + introZOffset + currentStepCamOffset.z * featuredWeight
-    );
+      camera.position.set(
+        sampledPos.x + currentStepCamOffset.x * featuredWeight + pointerSmoothed.x * 0.14,
+        sampledPos.y + currentStepCamOffset.y * featuredWeight + pointerSmoothed.y * 0.08,
+        sampledPos.z + introZOffset + currentStepCamOffset.z * featuredWeight
+      );
 
-    finalLookTarget.set(
-      sampledLook.x + currentStepLookOffset.x * featuredWeight,
-      sampledLook.y + currentStepLookOffset.y * featuredWeight,
-      sampledLook.z + currentStepLookOffset.z * featuredWeight
-    );
-    camera.lookAt(finalLookTarget);
+      finalLookTarget.set(
+        sampledLook.x + currentStepLookOffset.x * featuredWeight,
+        sampledLook.y + currentStepLookOffset.y * featuredWeight,
+        sampledLook.z + currentStepLookOffset.z * featuredWeight
+      );
+      camera.lookAt(finalLookTarget);
+    }
 
     // Keep accent lights tracking gracefully around active camera region
     primaryAccentLight.position.set(camera.position.x - 3.2, camera.position.y + 2.2, camera.position.z - 2.5);
     secondaryAccentLight.position.set(camera.position.x + 3.4, camera.position.y - 1.6, camera.position.z - 2.8);
 
-    // Update Stations & Atmospheric Field
+    // Update Active Stations & Subtle Corridor Atmosphere
     heroMonolith.setPointer(pointerSmoothed.x, pointerSmoothed.y, Math.min(1, Math.hypot(pointerSmoothed.x, pointerSmoothed.y)));
-    heroMonolith.update(elapsed, dt, pointerSmoothed, viewportWidth, viewportHeight, currentScrollT);
+    heroMonolith.update(elapsed, dt, pointerSmoothed, viewportWidth, viewportHeight, currentScrollT, isLegalMode);
     heroMonolith.syncTheme(lerpedColors, currentThemeMix);
 
-    macRemoteStage.update(elapsed, dt, pointerSmoothed, viewportWidth, currentScrollT);
-    macRemoteStage.syncTheme(lerpedColors, currentThemeMix);
-
-    journeyStage.update(elapsed, viewportWidth, currentScrollT);
-    journeyStage.syncTheme(lerpedColors);
-
-    skillsStage.update(elapsed, viewportWidth, currentScrollT);
-    skillsStage.syncTheme(lerpedColors);
-
-    iotStage.update(elapsed, dt, pointerSmoothed, viewportWidth, currentScrollT);
-    iotStage.syncTheme(lerpedColors);
-
-    projectsStage.update(elapsed, dt, viewportWidth, currentScrollT);
-    projectsStage.syncTheme(lerpedColors);
-
-    contactStage.update(elapsed, currentScrollT);
-    contactStage.syncTheme(lerpedColors);
+    if (macRemoteStage) {
+      macRemoteStage.update(elapsed, dt, pointerSmoothed, viewportWidth, currentScrollT);
+      macRemoteStage.syncTheme(lerpedColors, currentThemeMix);
+    }
 
     atmosphere.update(elapsed);
     atmosphere.syncTheme(lerpedColors, currentThemeMix);
@@ -2925,23 +2134,19 @@ export function initPortfolioScene() {
       introProgress = Math.max(0, Math.min(1, Number(p) || 0));
     },
     setFeaturedStep(idx) {
-      macRemoteStage.setStep(idx);
+      if (macRemoteStage) macRemoteStage.setStep(idx);
     },
     setFeaturedProgress(p) {
-      macRemoteStage.setProgress(p);
+      if (macRemoteStage) macRemoteStage.setProgress(p);
     },
     setTheme(theme, colors = null) {
       updateTargetPalette(theme, colors);
     },
     setLanguage(lang) {
-      macRemoteStage.setLanguage(lang);
+      if (macRemoteStage) macRemoteStage.setLanguage(lang);
     },
-    setIotState(stateKey) {
-      iotStage.setState(stateKey);
-    },
-    pulseProjectHover(proj) {
-      projectsStage.pulseHover(proj);
-    },
+    setIotState() {},
+    pulseProjectHover() {},
     getStationGroup(sectionId) {
       return stationGroups.get(sectionId) || null;
     },

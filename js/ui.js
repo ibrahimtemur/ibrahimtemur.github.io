@@ -13,17 +13,17 @@ import {
   t,
   initI18n,
   onLanguageChange
-} from "./i18n.js?v=9";
-import { getActiveTheme, getThemeSceneColors, initTheme } from "./theme.js?v=9";
+} from "./i18n.js?v=10";
+import { getActiveTheme, getThemeSceneColors, initTheme } from "./theme.js?v=10";
 import {
   EMAIL_ADDRESS,
   SOCIAL_LINKS,
   PROJECTS_DATA,
   getProjects,
   getProjectById
-} from "./projects-data.js?v=9";
-import { syncWithGitHubApi, updateGitHubStatusLabel } from "./github.js?v=9";
-import { initPalette } from "./palette.js?v=9";
+} from "./projects-data.js?v=10";
+import { syncWithGitHubApi, updateGitHubStatusLabel } from "./github.js?v=10";
+import { initPalette } from "./palette.js?v=10";
 
 export { getActiveLang, getThemeSceneColors };
 
@@ -307,24 +307,6 @@ function initScrollObservers() {
 
   window.addEventListener("scroll", updateScroll, { passive: true });
   updateScroll();
-
-  if ("IntersectionObserver" in window) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      { rootMargin: "-38% 0px -38% 0px", threshold: 0.01 }
-    );
-
-    SECTION_IDS.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-  }
 
   document.querySelectorAll(".rail-step").forEach((btn) => {
     btn.addEventListener("click", () => {
