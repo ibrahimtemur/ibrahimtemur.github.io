@@ -3,9 +3,9 @@
    Quick search across all 7 scenes, projects, and portfolio actions.
    ========================================================================== */
 
-import { PROJECTS_DATA } from "./projects-data.js?v=7";
-import { getActiveLang, t, applyLanguage } from "./i18n.js?v=7";
-import { getActiveTheme, toggleTheme } from "./theme.js?v=7";
+import { PROJECTS_DATA } from "./projects-data.js?v=8";
+import { getActiveLang, t, applyLanguage } from "./i18n.js?v=8";
+import { getActiveTheme, toggleTheme } from "./theme.js?v=8";
 
 let paletteActions = {};
 let isPaletteOpen = false;

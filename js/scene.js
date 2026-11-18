@@ -12,14 +12,12 @@ import {
   HERO_INTRO_START_Z,
   HERO_INTRO_END_Z,
   createCameraRig
-} from "./camera-path.js?v=7";
-import { FEATURED_SCREENS, getActiveLang } from "./i18n.js?v=7";
-import { getActiveTheme, getThemeSceneColors } from "./theme.js?v=7";
+} from "./camera-path.js?v=8";
+import { FEATURED_SCREENS, getActiveLang } from "./i18n.js?v=8";
+import { getActiveTheme, getThemeSceneColors } from "./theme.js?v=8";
 
 const MAC_SCREENSHOT_BASE =
   "https://raw.githubusercontent.com/ibrahimtemur/mac-remote-app/main/screenshots/";
-
-const MAC_LOGO_URL = `${MAC_SCREENSHOT_BASE}logo.png`;
 
 /* --------------------------------------------------------------------------
    1. CSS & THEME COLOR EXTRACTION
@@ -206,42 +204,6 @@ function composeMacDesktopTexture(sourceImgOrCanvas, lang = "tr", maxAnisotropy 
 
 function createDevicePlaceholderTexture(kind, lang = "tr") {
   const canvas = document.createElement("canvas");
-
-  if (kind === "icon") {
-    canvas.width = 512;
-    canvas.height = 512;
-    const ctx = canvas.getContext("2d");
-
-    const bg = ctx.createLinearGradient(0, 0, 512, 512);
-    bg.addColorStop(0, "#102026");
-    bg.addColorStop(1, "#183840");
-    ctx.fillStyle = bg;
-    ctx.fillRect(0, 0, 512, 512);
-
-    const halo = ctx.createRadialGradient(256, 256, 24, 256, 256, 230);
-    halo.addColorStop(0, "rgba(60, 207, 192, 0.34)");
-    halo.addColorStop(0.6, "rgba(242, 166, 90, 0.18)");
-    halo.addColorStop(1, "rgba(14, 27, 32, 0)");
-    ctx.fillStyle = halo;
-    ctx.fillRect(0, 0, 512, 512);
-
-    ctx.strokeStyle = "#3CCFC0";
-    ctx.lineWidth = 14;
-    drawRoundedRectPath(ctx, 108, 124, 296, 212, 28);
-    ctx.stroke();
-
-    ctx.strokeStyle = "#F2A65A";
-    ctx.lineWidth = 12;
-    ctx.beginPath();
-    ctx.moveTo(192, 384);
-    ctx.lineTo(320, 384);
-    ctx.stroke();
-
-    const tex = new THREE.CanvasTexture(canvas);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.needsUpdate = true;
-    return tex;
-  }
 
   if (kind === "server") {
     canvas.width = 740;
@@ -457,13 +419,41 @@ function createRoundedBorderPoints(width, height, radius, zOffset = 0, segmentsP
 }
 
 /* --------------------------------------------------------------------------
-   4. SCENE 01 — HERO 3D SOFTWARE ARCHITECTURE SCULPTURE
-   Exploded 3-layer isometric software & systems stack (Presentation /
-   Protocol & Logic Kernel / Systems & Storage) linked by animated conduits.
+   4. SCENE 01 — COMPACT BEVELED 3D </> SOFTWARE CODE EMBLEM
+   Floating cleanly above hero display typography without occluding the name.
    -------------------------------------------------------------------------- */
+function createCodeGlyphShapes() {
+  const leftChevron = new THREE.Shape();
+  leftChevron.moveTo(-0.26, 0.0);
+  leftChevron.lineTo(0.2, 0.46);
+  leftChevron.lineTo(0.31, 0.35);
+  leftChevron.lineTo(-0.04, 0.0);
+  leftChevron.lineTo(0.31, -0.35);
+  leftChevron.lineTo(0.2, -0.46);
+  leftChevron.closePath();
+
+  const slash = new THREE.Shape();
+  slash.moveTo(-0.26, -0.54);
+  slash.lineTo(-0.09, -0.54);
+  slash.lineTo(0.26, 0.54);
+  slash.lineTo(0.09, 0.54);
+  slash.closePath();
+
+  const rightChevron = new THREE.Shape();
+  rightChevron.moveTo(0.26, 0.0);
+  rightChevron.lineTo(-0.2, -0.46);
+  rightChevron.lineTo(-0.31, -0.35);
+  rightChevron.lineTo(0.04, 0.0);
+  rightChevron.lineTo(-0.31, 0.35);
+  rightChevron.lineTo(-0.2, 0.46);
+  rightChevron.closePath();
+
+  return { leftChevron, slash, rightChevron };
+}
+
 function createHeroMonolith(initialPalette) {
   const group = new THREE.Group();
-  group.name = "HeroArchitectureSculpture";
+  group.name = "HeroCodeEmblem";
 
   const uniforms = {
     uTime: { value: 0 },
@@ -475,261 +465,111 @@ function createHeroMonolith(initialPalette) {
     uThemeMix: { value: initialPalette.isLight ? 1.0 : 0.0 }
   };
 
-  const stackGroup = new THREE.Group();
-  stackGroup.rotation.set(-0.36, 0.48, 0.08);
-  group.add(stackGroup);
+  const emblemPivot = new THREE.Group();
+  group.add(emblemPivot);
 
-  const opacityEntries = [];
-  const registerFade = (mat, baseOpacity) => {
+  const fadeEntries = [];
+  const registerMat = (mat, baseOpacity) => {
     mat.transparent = true;
     mat.opacity = baseOpacity;
-    opacityEntries.push({ mat, baseOpacity });
+    fadeEntries.push({ mat, baseOpacity });
     return mat;
   };
 
-  const darkGlassColor = new THREE.Color("#10242A");
-  const lightGlassColor = new THREE.Color("#E2DDD1");
-  const darkNodeColor = new THREE.Color("#162F36");
-  const lightNodeColor = new THREE.Color("#FAF7F0");
+  const extrudeSettings = {
+    depth: 0.16,
+    bevelEnabled: true,
+    bevelThickness: 0.028,
+    bevelSize: 0.024,
+    bevelSegments: 4
+  };
 
-  function buildLayerPlate(width, depth, yPos, rimColor, fillBaseOp, rimBaseOp) {
-    const layer = new THREE.Group();
-    layer.position.y = yPos;
+  const { leftChevron, slash, rightChevron } = createCodeGlyphShapes();
 
-    const plateShape = createRoundedRectShape(width, depth, 0.22);
-    const plateGeo = new THREE.ShapeGeometry(plateShape, 16);
-    plateGeo.rotateX(-Math.PI * 0.5);
-
-    const plateMat = registerFade(
-      new THREE.MeshPhysicalMaterial({
-        color: initialPalette.isLight ? lightGlassColor.clone() : darkGlassColor.clone(),
-        metalness: 0.25,
-        roughness: 0.38,
-        clearcoat: 0.3,
-        depthWrite: false,
-        side: THREE.DoubleSide
-      }),
-      fillBaseOp
-    );
-    layer.add(new THREE.Mesh(plateGeo, plateMat));
-
-    const borderPts = createRoundedBorderPoints(width, depth, 0.22, 0, 10).map(
-      (p) => new THREE.Vector3(p.x, 0, -p.y)
-    );
-    const borderGeo = new THREE.BufferGeometry().setFromPoints(borderPts);
-    const borderMat = registerFade(
-      new THREE.LineBasicMaterial({ color: new THREE.Color(rimColor) }),
-      rimBaseOp
-    );
-    layer.add(new THREE.LineLoop(borderGeo, borderMat));
-
-    stackGroup.add(layer);
-    return { layer, plateMat, borderMat };
-  }
-
-  // Layer 1 (Top): Presentation / Multi-Platform Client UI Plane
-  const topLayer = buildLayerPlate(2.35, 1.56, 0.86, initialPalette.lightPrimary, 0.22, 0.82);
-
-  const uiBlockMat = registerFade(
-    new THREE.MeshStandardMaterial({
+  const bracketsMat = registerMat(
+    new THREE.MeshPhysicalMaterial({
       color: new THREE.Color(initialPalette.lightPrimary),
       emissive: new THREE.Color(initialPalette.lightPrimary),
-      emissiveIntensity: 0.22,
-      metalness: 0.35,
-      roughness: 0.32
+      emissiveIntensity: 0.32,
+      metalness: 0.68,
+      roughness: 0.24,
+      clearcoat: 0.55,
+      clearcoatRoughness: 0.18
     }),
-    0.42
+    0.96
   );
-  [
-    [-0.58, 0.055, -0.34, 0.72, 0.04, 0.42],
-    [0.36, 0.055, -0.22, 0.92, 0.04, 0.66],
-    [-0.22, 0.055, 0.36, 1.48, 0.04, 0.36]
-  ].forEach(([x, y, z, w, h, d]) => {
-    const mesh = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), uiBlockMat);
-    mesh.position.set(x, y, z);
-    topLayer.layer.add(mesh);
-  });
-
-  const cornerPinMat = registerFade(
-    new THREE.MeshBasicMaterial({ color: new THREE.Color(initialPalette.lightPrimary) }),
-    0.85
-  );
-  [
-    [-0.98, -0.6],
-    [0.98, -0.6],
-    [-0.98, 0.6],
-    [0.98, 0.6]
-  ].forEach(([cx, cz]) => {
-    const pin = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.07, 0.06), cornerPinMat);
-    pin.position.set(cx, 0.04, cz);
-    topLayer.layer.add(pin);
-  });
-
-  // Layer 2 (Middle): Protocol / Routing & Kernel Plane
-  const midLayer = buildLayerPlate(2.75, 1.82, 0.0, initialPalette.wire, 0.24, 0.72);
-
-  const nodeMatPrimary = registerFade(
-    new THREE.MeshStandardMaterial({
-      color: initialPalette.isLight ? lightNodeColor.clone() : darkNodeColor.clone(),
-      emissive: new THREE.Color(initialPalette.lightPrimary),
-      emissiveIntensity: 0.25,
-      metalness: 0.62,
-      roughness: 0.28
-    }),
-    0.88
-  );
-  const nodeMatWarm = registerFade(
-    new THREE.MeshStandardMaterial({
-      color: initialPalette.isLight ? lightNodeColor.clone() : darkNodeColor.clone(),
+  const slashMat = registerMat(
+    new THREE.MeshPhysicalMaterial({
+      color: new THREE.Color(initialPalette.lightSecondary),
       emissive: new THREE.Color(initialPalette.lightSecondary),
-      emissiveIntensity: 0.28,
-      metalness: 0.62,
-      roughness: 0.28
+      emissiveIntensity: 0.36,
+      metalness: 0.68,
+      roughness: 0.24,
+      clearcoat: 0.55,
+      clearcoatRoughness: 0.18
     }),
-    0.88
+    0.96
   );
-  const nodeWireMat = registerFade(
+
+  const bracketEdgeMat = registerMat(
     new THREE.LineBasicMaterial({ color: new THREE.Color(initialPalette.lightPrimary) }),
     0.72
   );
-
-  const logicCubes = [];
-  [
-    { pos: [-0.88, 0.07, -0.44], size: [0.34, 0.14, 0.34], warm: false },
-    { pos: [0.88, 0.07, -0.44], size: [0.34, 0.14, 0.34], warm: true },
-    { pos: [-0.88, 0.07, 0.44], size: [0.34, 0.14, 0.34], warm: true },
-    { pos: [0.88, 0.07, 0.44], size: [0.34, 0.14, 0.34], warm: false }
-  ].forEach((spec) => {
-    const boxGeo = new THREE.BoxGeometry(spec.size[0], spec.size[1], spec.size[2]);
-    const mesh = new THREE.Mesh(boxGeo, spec.warm ? nodeMatWarm : nodeMatPrimary);
-    mesh.position.set(spec.pos[0], spec.pos[1], spec.pos[2]);
-    mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(boxGeo), nodeWireMat));
-    midLayer.layer.add(mesh);
-    logicCubes.push(mesh);
-  });
-
-  const kernelMat = registerFade(
-    new THREE.MeshStandardMaterial({
-      color: new THREE.Color(initialPalette.lightPrimary),
-      emissive: new THREE.Color(initialPalette.lightSecondary),
-      emissiveIntensity: 0.38,
-      metalness: 0.75,
-      roughness: 0.22
-    }),
-    0.82
-  );
-  const kernelCore = new THREE.Mesh(new THREE.OctahedronGeometry(0.24, 0), kernelMat);
-  kernelCore.position.set(0, 0.12, 0);
-  const kernelWireMat = registerFade(
+  const slashEdgeMat = registerMat(
     new THREE.LineBasicMaterial({ color: new THREE.Color(initialPalette.lightSecondary) }),
-    0.85
+    0.75
   );
-  kernelCore.add(
-    new THREE.LineSegments(
-      new THREE.WireframeGeometry(new THREE.OctahedronGeometry(0.32, 0)),
-      kernelWireMat
-    )
+
+  function makeGlyphMesh(shape, mat, edgeMat, posX) {
+    const geo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+    geo.translate(0, 0, -extrudeSettings.depth * 0.5);
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(posX, 0, 0);
+    mesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(geo), edgeMat));
+    emblemPivot.add(mesh);
+    return mesh;
+  }
+
+  const leftGlyph = makeGlyphMesh(leftChevron, bracketsMat, bracketEdgeMat, -0.72);
+  const slashGlyph = makeGlyphMesh(slash, slashMat, slashEdgeMat, 0.0);
+  const rightGlyph = makeGlyphMesh(rightChevron, bracketsMat, bracketEdgeMat, 0.72);
+
+  // Subtle slender orbital hairline halo framing the compact emblem
+  const haloMat = registerMat(
+    new THREE.MeshBasicMaterial({ color: new THREE.Color(initialPalette.wire) }),
+    0.34
   );
-  midLayer.layer.add(kernelCore);
+  const haloRing = new THREE.Mesh(new THREE.TorusGeometry(1.36, 0.01, 12, 96), haloMat);
+  haloRing.rotation.set(1.12, -0.22, 0.0);
+  emblemPivot.add(haloRing);
 
-  const busLineMat = registerFade(
-    new THREE.LineBasicMaterial({ color: new THREE.Color(initialPalette.lightPrimary) }),
-    0.6
-  );
-  [
-    [new THREE.Vector3(-0.88, 0.025, -0.44), new THREE.Vector3(0, 0.025, 0)],
-    [new THREE.Vector3(0.88, 0.025, -0.44), new THREE.Vector3(0, 0.025, 0)],
-    [new THREE.Vector3(-0.88, 0.025, 0.44), new THREE.Vector3(0, 0.025, 0)],
-    [new THREE.Vector3(0.88, 0.025, 0.44), new THREE.Vector3(0, 0.025, 0)]
-  ].forEach(([a, b]) => {
-    midLayer.layer.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([a, b]), busLineMat));
-  });
-
-  // Layer 3 (Bottom): Systems Runtime & Persistence Plane
-  const botLayer = buildLayerPlate(2.55, 1.7, -0.86, initialPalette.lightSecondary, 0.26, 0.78);
-
-  const bankMat = registerFade(
-    new THREE.MeshStandardMaterial({
-      color: new THREE.Color(initialPalette.lightSecondary),
-      emissive: new THREE.Color(initialPalette.lightSecondary),
-      emissiveIntensity: 0.2,
-      metalness: 0.55,
-      roughness: 0.34
-    }),
-    0.58
-  );
-  [-0.78, -0.52, 0.52, 0.78].forEach((bx) => {
-    const bar = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.08, 1.02), bankMat);
-    bar.position.set(bx, 0.05, 0);
-    botLayer.layer.add(bar);
-  });
-
-  const dieGeo = new THREE.BoxGeometry(0.62, 0.07, 0.62);
-  const dieMesh = new THREE.Mesh(dieGeo, nodeMatPrimary);
-  dieMesh.position.set(0, 0.045, 0);
-  dieMesh.add(new THREE.LineSegments(new THREE.EdgesGeometry(dieGeo), kernelWireMat));
-  botLayer.layer.add(dieMesh);
-
-  // Vertical Data Conduits linking Top <-> Middle <-> Bottom
-  const conduitMat = registerFade(
-    new THREE.LineBasicMaterial({ color: new THREE.Color(initialPalette.wire) }),
-    0.48
-  );
-  const conduitCols = [
-    [-0.88, -0.44],
-    [0.88, -0.44],
-    [-0.88, 0.44],
-    [0.88, 0.44],
-    [0.0, 0.0],
-    [-0.36, 0.0]
-  ];
-  conduitCols.forEach(([cx, cz]) => {
-    const lineGeo = new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(cx, -0.86, cz),
-      new THREE.Vector3(cx, 0.86, cz)
-    ]);
-    stackGroup.add(new THREE.Line(lineGeo, conduitMat));
-  });
-
-  // Animated Signal Packets along vertical channels + subtle spatial coordinates
-  const conduitPacketCount = 24;
-  const ambientSparkCount = 28;
-  const sparkCount = conduitPacketCount + ambientSparkCount;
+  // Subtle compact code sparks around the emblem
+  const sparkCount = 24;
   const sparkPositions = new Float32Array(sparkCount * 3);
   const sparkMix = new Float32Array(sparkCount);
   const sparkSizes = new Float32Array(sparkCount);
-  const packetMeta = [];
+  const sparkPhases = new Float32Array(sparkCount);
 
-  for (let i = 0; i < conduitPacketCount; i++) {
-    const col = conduitCols[i % conduitCols.length];
-    const dir = i % 2 === 0 ? 1 : -1;
-    const phase = i / conduitPacketCount;
-    packetMeta.push({ cx: col[0], cz: col[1], dir, phase });
-    sparkPositions[i * 3] = col[0];
-    sparkPositions[i * 3 + 1] = -0.86 + phase * 1.72;
-    sparkPositions[i * 3 + 2] = col[1];
-    sparkMix[i] = i % 2 === 0 ? 0.0 : 1.0;
-    sparkSizes[i] = 15.0;
-  }
-
-  for (let j = 0; j < ambientSparkCount; j++) {
-    const idx = conduitPacketCount + j;
-    const theta = (j / ambientSparkCount) * Math.PI * 2 + (j % 4) * 0.4;
-    const rad = 1.65 + (j % 5) * 0.24;
-    sparkPositions[idx * 3] = Math.cos(theta) * rad;
-    sparkPositions[idx * 3 + 1] = ((j % 7) - 3) * 0.34;
-    sparkPositions[idx * 3 + 2] = Math.sin(theta) * (rad * 0.65);
-    sparkMix[idx] = j % 3 === 0 ? 1.0 : 0.0;
-    sparkSizes[idx] = 8.0 + (j % 3) * 3.0;
+  for (let i = 0; i < sparkCount; i++) {
+    const theta = (i / sparkCount) * Math.PI * 2 + (i % 3) * 0.35;
+    const rad = 1.25 + (i % 4) * 0.22;
+    sparkPositions[i * 3] = Math.cos(theta) * rad;
+    sparkPositions[i * 3 + 1] = ((i % 5) - 2) * 0.24;
+    sparkPositions[i * 3 + 2] = Math.sin(theta) * (rad * 0.65);
+    sparkMix[i] = i % 3 === 0 ? 1.0 : 0.0;
+    sparkSizes[i] = 9.0 + (i % 3) * 3.0;
+    sparkPhases[i] = i * 0.72;
   }
 
   const sparkGeo = new THREE.BufferGeometry();
   sparkGeo.setAttribute("position", new THREE.BufferAttribute(sparkPositions, 3));
   sparkGeo.setAttribute("aMix", new THREE.BufferAttribute(sparkMix, 1));
   sparkGeo.setAttribute("aSize", new THREE.BufferAttribute(sparkSizes, 1));
+  sparkGeo.setAttribute("aPhase", new THREE.BufferAttribute(sparkPhases, 1));
 
   const sparkMat = new THREE.ShaderMaterial({
     uniforms: {
+      uTime: uniforms.uTime,
       uPrimaryColor: uniforms.uPrimaryColor,
       uSecondaryColor: uniforms.uSecondaryColor,
       uPixelRatio: { value: Math.min(window.devicePixelRatio || 1, 2) },
@@ -742,12 +582,16 @@ function createHeroMonolith(initialPalette) {
     vertexShader: /* glsl */ `
       attribute float aMix;
       attribute float aSize;
+      attribute float aPhase;
+      uniform float uTime;
       uniform float uPixelRatio;
       varying float vMix;
       void main() {
         vMix = aMix;
-        vec4 mv = modelViewMatrix * vec4(position, 1.0);
-        gl_PointSize = clamp((aSize * uPixelRatio) / max(1.0, -mv.z * 0.52), 2.5, 22.0);
+        vec3 p = position;
+        p.y += sin(uTime * 0.8 + aPhase) * 0.06;
+        vec4 mv = modelViewMatrix * vec4(p, 1.0);
+        gl_PointSize = clamp((aSize * uPixelRatio) / max(1.0, -mv.z * 0.55), 2.0, 16.0);
         gl_Position = projectionMatrix * mv;
       }
     `,
@@ -759,18 +603,17 @@ function createHeroMonolith(initialPalette) {
       varying float vMix;
       void main() {
         float d = length(gl_PointCoord - 0.5);
-        float soft = smoothstep(0.5, 0.04, d);
+        float soft = smoothstep(0.5, 0.05, d);
         if (soft < 0.01 || uVisibility < 0.01) discard;
         vec3 col = mix(uPrimaryColor, uSecondaryColor, vMix);
-        float alpha = soft * mix(0.88, 0.72, uThemeMix) * uVisibility;
+        float alpha = soft * mix(0.76, 0.58, uThemeMix) * uVisibility;
         gl_FragColor = vec4(col, alpha);
         #include <colorspace_fragment>
       }
     `
   });
 
-  const sparks = new THREE.Points(sparkGeo, sparkMat);
-  stackGroup.add(sparks);
+  emblemPivot.add(new THREE.Points(sparkGeo, sparkMat));
 
   return {
     group,
@@ -780,7 +623,7 @@ function createHeroMonolith(initialPalette) {
       uniforms.uPointer.value.set(nx, ny);
       uniforms.uHover.value = hover;
     },
-    update(time, dt, pointerTarget, viewportWidth, viewportHeight, scrollT = 0) {
+    update(time, dt, pointerTarget, viewportWidth, _viewportHeight, scrollT = 0) {
       const heroVis = THREE.MathUtils.smoothstep(0.12 - scrollT, 0.0, 0.055);
       group.visible = heroVis > 0.005;
       if (!group.visible) return;
@@ -788,15 +631,11 @@ function createHeroMonolith(initialPalette) {
       uniforms.uTime.value = time;
       sparkMat.uniforms.uVisibility.value = heroVis;
 
+      // Compact scale perched cleanly ABOVE "İBRAHİM TEMUR" with zero text overlap
       const isMobile = viewportWidth < 768;
-      const aspect = viewportWidth / Math.max(1, viewportHeight);
-      const targetScale = isMobile
-        ? THREE.MathUtils.clamp(aspect * 0.82, 0.36, 0.52)
-        : viewportWidth < 1100
-        ? 0.78
-        : 0.92;
-      const targetPosX = isMobile ? 0.0 : pointerTarget.x * 0.14;
-      const targetPosY = isMobile ? 0.02 : 0.06 + pointerTarget.y * 0.08;
+      const targetScale = isMobile ? 0.3 : viewportWidth < 1100 ? 0.4 : 0.46;
+      const targetPosX = isMobile ? 0.0 : pointerTarget.x * 0.1;
+      const targetPosY = isMobile ? 0.92 : 1.24 + pointerTarget.y * 0.06;
 
       group.scale.setScalar(
         THREE.MathUtils.lerp(group.scale.x, targetScale, Math.min(1, dt * 6))
@@ -812,40 +651,30 @@ function createHeroMonolith(initialPalette) {
         Math.min(1, dt * 5)
       );
 
-      const tiltX = isMobile ? -0.3 : -0.36 - pointerTarget.y * 0.1;
+      const tiltX = isMobile ? -0.04 : -0.06 - pointerTarget.y * 0.14;
       const tiltY = isMobile
-        ? 0.44 + Math.sin(time * 0.4) * 0.08
-        : 0.48 + Math.sin(time * 0.3) * 0.05 + pointerTarget.x * 0.18;
-      stackGroup.rotation.x = THREE.MathUtils.lerp(
-        stackGroup.rotation.x,
+        ? Math.sin(time * 0.6) * 0.16
+        : Math.sin(time * 0.55) * 0.14 + pointerTarget.x * 0.28;
+      emblemPivot.rotation.x = THREE.MathUtils.lerp(
+        emblemPivot.rotation.x,
         tiltX,
         Math.min(1, dt * 5)
       );
-      stackGroup.rotation.y = THREE.MathUtils.lerp(
-        stackGroup.rotation.y,
+      emblemPivot.rotation.y = THREE.MathUtils.lerp(
+        emblemPivot.rotation.y,
         tiltY,
         Math.min(1, dt * 5)
       );
 
-      opacityEntries.forEach((entry) => {
+      fadeEntries.forEach((entry) => {
         entry.mat.opacity = entry.baseOpacity * heroVis;
       });
 
-      const breathe = Math.sin(time * 0.9) * 0.045;
-      topLayer.layer.position.y = 0.86 + breathe;
-      botLayer.layer.position.y = -0.86 - breathe;
-      kernelCore.rotation.y += dt * 0.55;
-      kernelCore.rotation.z = Math.sin(time * 0.75) * 0.14;
-
-      const posAttr = sparkGeo.attributes.position;
-      const flowSpeed = 0.42 + uniforms.uHover.value * 0.25;
-      for (let i = 0; i < conduitPacketCount; i++) {
-        const meta = packetMeta[i];
-        const u = ((time * flowSpeed * meta.dir + meta.phase) % 1 + 1) % 1;
-        const yVal = -0.86 + u * 1.72;
-        posAttr.setXYZ(i, meta.cx, yVal, meta.cz);
-      }
-      posAttr.needsUpdate = true;
+      const breathe = Math.sin(time * 1.4) * 0.035;
+      leftGlyph.position.x = -0.72 - breathe;
+      rightGlyph.position.x = 0.72 + breathe;
+      slashGlyph.position.y = Math.sin(time * 1.1) * 0.03;
+      haloRing.rotation.z += dt * 0.18;
     },
     syncTheme(lerpedColors, themeMix) {
       uniforms.uPrimaryColor.value.copy(lerpedColors.primary);
@@ -853,30 +682,13 @@ function createHeroMonolith(initialPalette) {
       uniforms.uBgColor.value.copy(lerpedColors.bg);
       uniforms.uThemeMix.value = themeMix;
 
-      [topLayer.plateMat, midLayer.plateMat, botLayer.plateMat].forEach((m) => {
-        m.color.lerpColors(darkGlassColor, lightGlassColor, themeMix);
-      });
-      [nodeMatPrimary, nodeMatWarm].forEach((m) => {
-        m.color.lerpColors(darkNodeColor, lightNodeColor, themeMix);
-      });
-      nodeMatPrimary.emissive.copy(lerpedColors.primary);
-      nodeMatWarm.emissive.copy(lerpedColors.secondary);
-
-      topLayer.borderMat.color.copy(lerpedColors.primary);
-      midLayer.borderMat.color.copy(lerpedColors.wire);
-      botLayer.borderMat.color.copy(lerpedColors.secondary);
-
-      uiBlockMat.color.copy(lerpedColors.primary);
-      uiBlockMat.emissive.copy(lerpedColors.primary);
-      cornerPinMat.color.copy(lerpedColors.primary);
-      nodeWireMat.color.copy(lerpedColors.primary);
-      busLineMat.color.copy(lerpedColors.primary);
-      kernelMat.color.copy(lerpedColors.primary);
-      kernelMat.emissive.copy(lerpedColors.secondary);
-      kernelWireMat.color.copy(lerpedColors.secondary);
-      bankMat.color.copy(lerpedColors.secondary);
-      bankMat.emissive.copy(lerpedColors.secondary);
-      conduitMat.color.copy(lerpedColors.wire);
+      bracketsMat.color.copy(lerpedColors.primary);
+      bracketsMat.emissive.copy(lerpedColors.primary);
+      slashMat.color.copy(lerpedColors.secondary);
+      slashMat.emissive.copy(lerpedColors.secondary);
+      bracketEdgeMat.color.copy(lerpedColors.primary);
+      slashEdgeMat.color.copy(lerpedColors.secondary);
+      haloMat.color.copy(lerpedColors.wire);
     }
   };
 }
@@ -1348,8 +1160,7 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
     server: {
       tr: createDevicePlaceholderTexture("server", "tr"),
       en: createDevicePlaceholderTexture("server", "en")
-    },
-    icon: createDevicePlaceholderTexture("icon", "tr")
+    }
   };
 
   let activeLang = getActiveLang();
@@ -1512,22 +1323,7 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
   serverSlab.group.add(macLowerAssembly);
   group.add(serverSlab.group);
 
-  // 3. App Icon Floating Slab (512 x 512 -> 1:1 ratio)
-  const iconSlab = createPrecisionDeviceSlab({
-    screenWidth: 0.72,
-    screenHeight: 0.72,
-    bezelPadX: 0.04,
-    bezelPadY: 0.04,
-    bodyDepth: 0.045,
-    cornerRadius: 0.18,
-    screenCornerRadius: 0.15,
-    initialTexture: placeholders.icon,
-    initialPalette,
-    isIcon: true
-  });
-  group.add(iconSlab.group);
-
-  // 4. Procedural Flowing Turquoise -> Amber Light Bridge
+  // 3. Procedural Flowing Turquoise -> Amber Light Bridge
   const lightBridge = createFlowingLightBridge(initialPalette);
   group.add(lightBridge.group);
 
@@ -1577,9 +1373,6 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
       }
       serverSlab.setTexture(composite || placeholders.server[langKey], instant);
     });
-    loadCachedTexture(MAC_LOGO_URL, placeholders.icon, (tex) => {
-      iconSlab.setTexture(tex, true);
-    });
 
     // Preload alternate step & alternate language silently for instant switching
     const otherMobileIdx = mobileIdx === 0 ? 1 : 0;
@@ -1607,7 +1400,6 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
       serverRot: new THREE.Euler(-0.02, -0.22, 0.0),
       serverScale: 0.88,
       serverFocus: 0.86,
-      iconPos: new THREE.Vector3(-0.32, 1.56, 0.45),
       bridgeIntensity: 1.0
     },
     // Step 1: Trackpad & Live Screen -> tr2/en2 glides to center stage
@@ -1620,7 +1412,6 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
       serverRot: new THREE.Euler(-0.02, -0.28, 0.0),
       serverScale: 0.82,
       serverFocus: 0.76,
-      iconPos: new THREE.Vector3(0.45, 1.58, 0.35),
       bridgeIntensity: 0.92
     },
     // Step 2: macOS Server Control Panel -> Landscape MacBook steps forward
@@ -1633,7 +1424,6 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
       serverRot: new THREE.Euler(0.02, -0.08, 0.0),
       serverScale: 0.96,
       serverFocus: 1.0,
-      iconPos: new THREE.Vector3(-0.92, 1.54, 0.42),
       bridgeIntensity: 0.96
     }
   ];
@@ -1643,7 +1433,6 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
   mobileSlab.group.rotation.copy(STEP_POSES[0].mobileRot);
   serverSlab.group.position.copy(STEP_POSES[0].serverPos);
   serverSlab.group.rotation.copy(STEP_POSES[0].serverRot);
-  iconSlab.group.position.copy(STEP_POSES[0].iconPos);
 
   const tmpStart = new THREE.Vector3();
   const tmpEnd = new THREE.Vector3();
@@ -1803,33 +1592,12 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
         lerpAlpha
       );
 
-      // App Icon floating badge
-      iconSlab.group.position.x = THREE.MathUtils.lerp(
-        iconSlab.group.position.x,
-        pose.iconPos.x * xSpread,
-        lerpAlpha
-      );
-      iconSlab.group.position.y = THREE.MathUtils.lerp(
-        iconSlab.group.position.y,
-        pose.iconPos.y + Math.sin(time * 1.45) * 0.07,
-        lerpAlpha
-      );
-      iconSlab.group.position.z = THREE.MathUtils.lerp(
-        iconSlab.group.position.z,
-        pose.iconPos.z,
-        lerpAlpha
-      );
-      iconSlab.group.rotation.y = Math.sin(time * 0.8 + continuousProgress * 1.5) * 0.22;
-      iconSlab.group.rotation.x = Math.cos(time * 0.7) * 0.06;
-
       mobileSlab.setOpacity(vis);
       serverSlab.setOpacity(vis);
-      iconSlab.setOpacity(vis);
       baseRingMat.opacity = 0.42 * vis;
 
       mobileSlab.tick(time, dt);
       serverSlab.tick(time, dt);
-      iconSlab.tick(time, dt);
 
       // Bridge endpoints stay locked to the inner edges of mobile & MacBook slabs
       tmpStart.set(
@@ -1852,7 +1620,7 @@ function createMacRemoteStage(initialPalette, maxAnisotropy) {
       baseRing.rotation.y = time * 0.05;
     },
     syncTheme(lerpedColors, themeMix) {
-      [mobileSlab, serverSlab, iconSlab].forEach((slab) => {
+      [mobileSlab, serverSlab].forEach((slab) => {
         slab.bodyMat.color.lerpColors(darkBodyColor, lightBodyColor, themeMix);
         slab.rimMat.color.copy(lerpedColors.primary);
         slab.uniforms.uPrimaryColor.value.copy(lerpedColors.primary);

@@ -17,12 +17,12 @@
     padding-block: clamp(4.75rem, 9vh, 6.5rem) clamp(5.5rem, 11vh, 7.5rem);
   }
 
-  /* Depth layer behind #webgl-canvas (z-index: 0 < canvas z-index: 1) */
+  /* Keep hero display typography crisp and never occluded by 3D geometry */
   .hero-display-back {
     grid-column: 1 / -1;
     grid-row: 2;
     position: relative;
-    z-index: var(--z-hero-back);
+    z-index: var(--z-scenes);
     width: min(var(--container-max), 100%);
     margin-inline: auto;
     display: flex;
